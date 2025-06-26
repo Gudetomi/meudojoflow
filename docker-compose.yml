@@ -57,7 +57,17 @@ services:
     image: redis:latest
     networks:
       - laravel
-
+  node:
+    image: node:20
+    container_name: dojomanager-node
+    working_dir: /var/www
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+    depends_on:
+      - app
 networks:
   laravel:
     driver: bridge
