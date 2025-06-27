@@ -22,7 +22,9 @@ services:
       - "8989:80"
     volumes:
       - ./:/var/www
-      - ./docker/nginx/:/etc/nginx/conf.d/
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf   # Fix: monte o arquivo default.conf diretamente
+    depends_on:
+      - app
     networks:
       - laravel
 
@@ -57,6 +59,7 @@ services:
     image: redis:latest
     networks:
       - laravel
+
   node:
     image: node:20
     container_name: dojomanager-node
@@ -64,10 +67,15 @@ services:
     command: sh -c "npm install && npm run dev"
     volumes:
       - ./:/var/www
+    ports:
+      - "5173:5173"     # expose a porta do vite para hot reload funcionar externamente
+    environment:
+      - NODE_ENV=development
     networks:
       - laravel
     depends_on:
       - app
+
 networks:
   laravel:
     driver: bridge
