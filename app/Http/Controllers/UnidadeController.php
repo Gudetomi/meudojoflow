@@ -13,7 +13,7 @@ class UnidadeController extends Controller
      */
     public function index()
     {
-        $unidades = Unidade::where('user_id',Auth::id())->get();
+        $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
         return view('unidades.index',compact('unidades'));
     }
 
@@ -67,8 +67,10 @@ class UnidadeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function softDelete(Unidade $unidade)
+    public function destroy(Unidade $unidade)
     {
-        //
+        $unidade->update(['ativo' => false]);
+        return redirect()->route('unidades.index')->with('success', 'Unidade desativada com sucesso.');
+        
     }
 }
