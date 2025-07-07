@@ -1,3 +1,3 @@
 <x-app-layout>
-    {{ __("You're logged in!") }}
+    {{ __("Bem vindo ao DojoManager!") }}
 </x-app-layout>

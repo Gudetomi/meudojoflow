@@ -20,20 +20,17 @@
             <!-- Page Content -->
             <main>
             <div class="flex min-h-screen">
-                <!-- Menu Lateral -->
-                <aside class="w-64 bg-white border-r">
-                    @include('layouts.sidebar')
-                </aside>
-
-                <!-- Conteúdo Principal -->
-                <main class="flex-1 p-6 bg-gray-100">
-                                 
+            <aside class="w-80 flex-shrink-0 bg-white border-r shadow-sm h-screen">
+                @include('layouts.sidebar')
+            </aside>
+            
+            <main class="flex-1 p-6 bg-gray-100">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-gray-900">
-                            {{ $slot }}
-                        </div>
-                    </div>
-                </main>
+                <div class="p-6 text-gray-900">
+                    {{ $slot }}
+                </div>
+                </div>
+            </main>
             </div>
             </main>
         </div>
