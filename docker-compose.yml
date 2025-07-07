@@ -1,4 +1,3 @@
-version: "3.7"
 
 services:
   app:
@@ -6,14 +5,17 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    working_dir: /var/www/
+    working_dir: /var/www
     volumes:
       - ./:/var/www
+      - /var/www/node_modules # evita conflito com node_modules local
     depends_on:
       - redis
       - db
     networks:
       - laravel
+    ports:
+      - "5173:5173" # Expondo porta do Vite para dev, se necessário
 
   nginx:
     image: nginx:alpine
@@ -59,22 +61,6 @@ services:
     image: redis:latest
     networks:
       - laravel
-
-  node:
-    image: node:20
-    container_name: dojomanager-node
-    working_dir: /var/www
-    command: sh -c "chmod -R 777 /var/www && npm install && npm run dev"
-    volumes:
-      - ./:/var/www
-    ports:
-      - "5173:5173"
-    environment:
-      - NODE_ENV=development
-    networks:
-      - laravel
-    depends_on:
-      - app
 
 networks:
   laravel:
