@@ -17,19 +17,24 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+            <div class="flex min-h-screen">
+                <!-- Menu Lateral -->
+                <aside class="w-64 bg-white border-r">
+                    @include('layouts.sidebar')
+                </aside>
+
+                <!-- Conteúdo Principal -->
+                <main class="flex-1 p-6 bg-gray-100">
+                                 
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 text-gray-900">
+                            {{ $slot }}
+                        </div>
+                    </div>
+                </main>
+            </div>
             </main>
         </div>
     </body>
