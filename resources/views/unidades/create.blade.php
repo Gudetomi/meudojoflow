@@ -4,23 +4,23 @@
             Nova Unidade
         </h2>
     </x-slot>
-
-    <div class="mt-6">
-        <form action="{{ route('unidades.store') }}" method="POST" class="space-y-6 max-w-md bg-white p-6">
+    <div class="bg-white p-6">
+        <form action="{{ route('unidades.store') }}" method="POST">
             @csrf
-
-            <div>
-                <label class="block text-sm font-medium">Nome da Unidade</label>
-                <input type="text" name="nome_unidade" required class="mt-1 w-full border-gray-300 rounded shadow-sm" value="{{ old('nome_unidade') }}">
-                @error('nome_unidade') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                    Salvar
-                </button>
-                <a href="{{ route('unidades.index') }}" class="ml-4 text-gray-600 hover:underline">Cancelar</a>
+            <label for="nome_unidade" class="block text-sm font-medium text-gray-700">Nome da Unidade</label>
+            <div class="mt-1 flex items-center gap-4">
+                <div class="flex-grow max-w-md">
+                    <input type="text" id="nome_unidade" name="nome_unidade" required class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="{{ old('nome_unidade') }}">
+                    @error('nome_unidade') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
+                </div>
+                <div class="flex-shrink-0">
+                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Salvar
+                    </button>
+                    <a href="{{ route('unidades.index') }}" class="ml-4 text-sm text-gray-600 hover:underline">Cancelar</a>
+                </div>
             </div>
         </form>
     </div>
+
 </x-app-layout>
