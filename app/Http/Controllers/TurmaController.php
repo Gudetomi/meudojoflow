@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Turma;
+use App\Models\Unidade;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;;
+use Illuminate\Validation\Rule;
 class TurmaController extends Controller
 {
     /**
@@ -12,7 +14,8 @@ class TurmaController extends Controller
      */
     public function index()
     {
-        //
+        $turmas = Turma::where('user_id',Auth::id())->where('ativo',true)->get();
+        return view('turmas.index',compact('turmas'));
     }
 
     /**
@@ -20,7 +23,8 @@ class TurmaController extends Controller
      */
     public function create()
     {
-        //
+        $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
+        return view('turmas.create',compact('unidades'));
     }
 
     /**
@@ -28,7 +32,25 @@ class TurmaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nome_turma' => ['required', 'string', 'max:255', 'unique:turmas,nome_turma'],
+            'unidade_id' => ['required',
+                Rule::exists('unidades', 'id')->where(function ($query) {
+                        return $query->where('user_id', Auth::id());
+                    }),
+            ]   
+        ],[
+            'nome_turma.required' => 'O nome da turma é obrigatório.',
+            'unidade_id.required' => 'Por favor, selecione uma unidade.',
+            'unidade_id.exists'   => 'A unidade selecionada é inválida.',
+        ]);
+            Turma::create([
+                'nome_turma' => $validatedData['nome_turma'],
+                'unidade_id' => $validatedData['unidade_id'],
+                'user_id'    => Auth::id(),
+                'ativo'      => true,
+            ]);
+            return redirect()->route('turmas.index');
     }
 
     /**

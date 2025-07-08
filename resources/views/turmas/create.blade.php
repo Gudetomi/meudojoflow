@@ -4,22 +4,35 @@
             Nova Turma
         </h2>
     </x-slot>
+
     <div class="bg-white p-6">
         <form action="{{ route('turmas.store') }}" method="POST">
             @csrf
-            <label for="nome_turma" class="block text-sm font-medium text-gray-700">Nome da Turma</label>
-            <div class="mt-1 flex items-center gap-4">
-                <div class="flex-grow max-w-md">
-                    <input type="text" id="nome_turma" name="nome_turma" required class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="{{ old('nome_turma') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                <div>
+                    <label for="unidade_id" class="block text-sm font-medium text-gray-700">Unidade</label>
+                    <select id="unidade_id" name="unidade_id" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">Selecione uma unidade</option>
+                        @foreach ($unidades as $unidade)
+                            <option value="{{ $unidade->id }}" {{ old('unidade_id') == $unidade->id ? 'selected' : '' }}>
+                                {{ $unidade->nome_unidade }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('unidade_id') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
                 </div>
-                <div class="flex-shrink-0">
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                        Salvar
-                    </button>
-                    <a href="{{ route('turmas.index') }}" class="ml-4 text-sm text-gray-600 hover:underline">Cancelar</a>
+                <div>
+                    <label for="nome_turma" class="block text-sm font-medium text-gray-700">Nome da Turma</label>
+                    <input type="text" id="nome_turma" name="nome_turma" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="{{ old('nome_turma') }}">
+                    @error('nome_turma') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
                 </div>
             </div>
-             @error('nome_turma') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
+            <div class="mt-6 flex items-center gap-4">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                    Salvar Turma
+                </button>
+                <a href="{{ route('turmas.index') }}" class="text-sm text-gray-600 hover:underline">Cancelar</a>
+            </div>
         </form>
     </div>
 </x-app-layout>
