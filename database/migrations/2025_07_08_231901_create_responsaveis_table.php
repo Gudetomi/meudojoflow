@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nome_responsavel');
             $table->string('email_responsavel');
-            $table->string('telefone_responsavel');
+            $table->string('cpf_responsavel',11);
+            $table->string('telefone_responsavel',11);
             $table->unsignedBigInteger('user_id');
             $table->uuid('aluno_id');
             $table->timestamps();
