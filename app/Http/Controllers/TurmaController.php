@@ -33,22 +33,26 @@ class TurmaController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'nome_turma' => ['required', 'string', 'max:255', 'unique:turmas,nome_turma'],
+            'nome_turma' => ['required', 'string', 'max:255',  
+                Rule::unique('turmas')->where(function($query) use ($request){
+                    return $query->where('unidade_id', $request->unidade_id);
+                })
+            ],
             'unidade_id' => ['required',
                 Rule::exists('unidades', 'id')->where(function ($query) {
                         return $query->where('user_id', Auth::id());
-                    }),
+                })
             ]   
         ],[
             'nome_turma.required' => 'O nome da turma é obrigatório.',
+            'nome_turma.unique'   => 'Já existe uma turma com este nome nesta unidade.',
             'unidade_id.required' => 'Por favor, selecione uma unidade.',
             'unidade_id.exists'   => 'A unidade selecionada é inválida.',
         ]);
             Turma::create([
                 'nome_turma' => $validatedData['nome_turma'],
                 'unidade_id' => $validatedData['unidade_id'],
-                'user_id'    => Auth::id(),
-                'ativo'      => true,
+                'user_id'    => Auth::id()
             ]);
             return redirect()->route('turmas.index');
     }
@@ -58,7 +62,11 @@ class TurmaController extends Controller
      */
     public function edit(Turma $turma)
     {
-        //
+        if(Auth::id() != $turma->user_id){
+            abort(403, 'Acesso negado.');
+        }
+        $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
+        return view('turmas.edit', compact('turma','unidades'));
     }
 
     /**
@@ -66,7 +74,28 @@ class TurmaController extends Controller
      */
     public function update(Request $request, Turma $turma)
     {
-        //
+        if (Auth::id() !== $turma->user_id) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        $validatedData = $request->validate([
+            'nome_turma' => ['required', 'string', 'max:255', 
+                Rule::unique('turmas')->where(function($query) use ($request){
+                    return $query->where('unidade_id', $request->unidade_id);
+                })->ignore($turma->id)
+            ],
+            'unidade_id' => ['required',
+                Rule::exists('unidades', 'id')->where(function ($query) {
+                        return $query->where('user_id', Auth::id());
+                    }),
+            ]   
+        ],[
+            'nome_turma.required' => 'O nome da turma é obrigatório.',
+            'nome_turma.unique'   => 'Já existe uma turma com este nome nesta unidade.',
+            'unidade_id.required' => 'Por favor, selecione uma unidade.',
+            'unidade_id.exists'   => 'A unidade selecionada é inválida.',
+        ]);
+        $turma->update($validatedData);
+        return redirect()->route('turmas.index');
     }
 
     /**
@@ -74,6 +103,7 @@ class TurmaController extends Controller
      */
     public function destroy(Turma $turma)
     {
-        //
+        $turma->update(['ativo' => false]);
+        return redirect()->route('turmas.index')->with('success', 'Turma desativada com sucesso.');
     }
 }
