@@ -31,7 +31,9 @@ class UnidadeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome_unidade' => ['required', 'string', 'max:255']
+            'nome_unidade' => ['required', 'string', 'max:255', 'unique:unidades,nome_unidade'],
+        ],[
+            'nome_unidade.unique' => 'Já existe uma unidade com esse nome!'
         ]);
         Unidade::create([
             'nome_unidade' => $request->nome_unidade,
@@ -53,7 +55,9 @@ class UnidadeController extends Controller
     public function update(Request $request, Unidade $unidade)
     {
         $validatedData = $request->validate([
-            'nome_unidade' => 'required|string|max:255',
+            'nome_unidade' => 'required|string|max:255|unique:unidades,nome_unidade',
+        ],[
+            'nome_unidade.unique' => 'Já existe uma unidade com esse nome!'
         ]);
         $unidade->nome_unidade = $validatedData['nome_unidade'];
         $unidade->save();
