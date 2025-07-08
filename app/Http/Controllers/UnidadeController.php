@@ -39,21 +39,12 @@ class UnidadeController extends Controller
         ]);
         return redirect()->route('unidades.index');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Unidade $unidade)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Unidade $unidade)
     {
-        //
+       return view('unidades.edit', compact('unidade'));
     }
 
     /**
@@ -61,7 +52,12 @@ class UnidadeController extends Controller
      */
     public function update(Request $request, Unidade $unidade)
     {
-        //
+        $validatedData = $request->validate([
+            'nome_unidade' => 'required|string|max:255',
+        ]);
+        $unidade->nome_unidade = $validatedData['nome_unidade'];
+        $unidade->save();
+        return redirect()->route('unidades.index');
     }
 
     /**
