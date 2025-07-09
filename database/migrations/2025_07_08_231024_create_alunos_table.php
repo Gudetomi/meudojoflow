@@ -18,8 +18,8 @@ return new class extends Migration
             $table->uuid('unidade_id');
             $table->boolean('ativo')->default(true);
             $table->date('data_nascimento');
-            $table->string('cpf',11);
-            $table->string('email');
+            $table->string('cpf',11)->unique();
+            $table->string('email')->nullable();
             $table->integer('idade');
             $table->integer('sexo');
             $table->string('telefone',11);
