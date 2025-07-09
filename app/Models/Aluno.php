@@ -12,7 +12,7 @@ class Aluno extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'turmas';
+    protected $table = 'alunos';
     protected $fillable = [
         'nome_aluno',
         'user_id',
@@ -34,8 +34,12 @@ class Aluno extends Model
     {
         return $this->belongsTo(User::class);
     }
-        public function unidade()
+    public function unidade()
     {
         return $this->belongsTo(Unidade::class);
+    }
+    public function turma()
+    {
+        return $this->belongsTo(Turma::class);
     }
 }

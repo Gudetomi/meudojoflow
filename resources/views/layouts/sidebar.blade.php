@@ -17,7 +17,7 @@
             <x-heroicon-o-users class="w-5 h-5" />
             <span class="ml-3">Turmas</span>
         </a>
-        <a href="{{ route('dashboard') }}" 
+        <a href="{{ route('alunos.index') }}" 
         class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('alunos') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100' }}">
             <x-heroicon-o-user class="w-5 h-5" />
             <span class="ml-3">Alunos</span>

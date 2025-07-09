@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nome_aluno');
             $table->unsignedBigInteger('user_id');
             $table->uuid('unidade_id');
+            $table->uuid('turma_id');
             $table->boolean('ativo')->default(true);
             $table->date('data_nascimento');
             $table->string('cpf',11)->unique();
@@ -33,6 +34,7 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('unidade_id')->references('id')->on('unidades');
+            $table->foreign('turma_id')->references('id')->on('turmas');
         });
     }
 

@@ -27,4 +27,9 @@ class Turma extends Model
     {
         return $this->belongsTo(Unidade::class);
     }
+    public function alunos()
+    {
+        return $this->hasMany(Aluno::class);
+    }
+
 }
