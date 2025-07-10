@@ -1,5 +1,10 @@
 <x-app-layout>
-    <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+        <x-slot name="header">
+        <h2 class="text-xl font-semibold text-gray-800 leading-tight">
+            Alunos
+        </h2>
+    </x-slot>
+    <div class="bg-white p-6">
         <div class="mb-6">
             <form action="{{ route('alunos.index') }}" method="GET" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -32,15 +37,14 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button type="submit" class="px-6 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">Filtrar</button>
-                    <a href="{{ route('alunos.index') }}" class="text-sm text-gray-600 hover:underline">Limpar Filtros</a>
                     <a href="{{ route('alunos.create') }}" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                         + Novo Aluno
                     </a>
+                    <button type="submit" class="px-6 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">Filtrar</button>
+                    <a href="{{ route('alunos.index') }}" class="text-sm text-gray-600 hover:underline">Limpar Filtros</a>
                 </div>
             </form>
         </div>
-
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white">
                 <thead class="bg-gray-50">

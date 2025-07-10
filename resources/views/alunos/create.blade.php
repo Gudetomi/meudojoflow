@@ -65,9 +65,6 @@
                     <label for="unidade_id" class="block text-sm font-medium text-gray-700">Turma</label>
                     <select name="unidade_id" id="unidade_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         <option value="">Selecione</option>
-                        @foreach ($turmas as $turma)
-                            <option value="{{ $turma->id }}">{{ $turma->nome_turma }}</option>
-                        @endforeach
                     </select>
                 </div>
 
@@ -147,7 +144,7 @@
                     }
                 });
             });
-            document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
         const nascimentoInput = document.getElementById('data_nascimento');
         const idadeInput = document.getElementById('idade');
 
@@ -172,6 +169,20 @@
             }
         });
     });
+            $('#unidade_id').on('change', function () {
+            var unidadeId = $(this).val();
+            if (unidadeId) {
+                $.getJSON(`/api/turmas/por-unidade/${unidadeId}`, function (data) {
+                    var turmaSelect = $('#turma_id');
+                    turmaSelect.empty();
+                    turmaSelect.append('<option value="">Selecione uma turma</option>');
+                    data.forEach(turma => {
+                        turmaSelect.append(`<option value="${turma.id}">${turma.nome_turma}</option>`);
+                    });
+                });
+            }
+        });
+
         </script>
     @endpush
 </x-app-layout>
