@@ -14,35 +14,33 @@ class AlunoController extends Controller
      * Display a listing of the resource.
      */
    public function index(Request $request)
-{
-    
+   { 
+        $alunos = Aluno::where('user_id', Auth::id())
+            ->with('turma')
+            ->when($request->query('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nome_aluno', 'ilike', "%{$search}%")
+                    ->orWhere('cpf', 'ilike', "%{$search}%");
+                });
+            })
+            ->when($request->query('turma_id'), function ($query, $turmaId) {
+                $query->where('turma_id', $turmaId);
+            })
+            ->when($request->query('unidade_id'), function ($query, $unidadeId) {
+                $query->where('unidade_id', $unidadeId);
+            })
+            ->orderByDesc('created_at')
+            ->paginate(10);
+        $unidades = Unidade::where('user_id', Auth::id())->where('ativo', true)->get();
+        $turmas = Turma::where('user_id', Auth::id())->where('ativo', true)->get(); 
 
-    $alunos = Aluno::where('user_id', Auth::id())
-        ->with('turma')
-        ->when($request->query('search'), function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nome_aluno', 'ilike', "%{$search}%")
-                ->orWhere('cpf', 'ilike', "%{$search}%");
-            });
-        })
-        ->when($request->query('turma_id'), function ($query, $turmaId) {
-            $query->where('turma_id', $turmaId);
-        })
-        ->when($request->query('unidade_id'), function ($query, $unidadeId) {
-            $query->where('unidade_id', $unidadeId);
-        })
-        ->orderByDesc('created_at')
-        ->paginate(10);
-    $unidades = Unidade::where('user_id', Auth::id())->where('ativo', true)->get();
-    $turmas = Turma::where('user_id', Auth::id())->where('ativo', true)->get(); 
-
-    return view('alunos.index', [
-        'alunos' => $alunos,
-        'unidades' => $unidades,
-        'turmas' => $turmas,
-        'filters' => $request->query()
-    ]);
-}
+        return view('alunos.index', [
+            'alunos' => $alunos,
+            'unidades' => $unidades,
+            'turmas' => $turmas,
+            'filters' => $request->query()
+        ]);
+   }
 
 
     /**
@@ -50,7 +48,9 @@ class AlunoController extends Controller
      */
     public function create()
     {
-        //
+       $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
+       $turmas = Turma::where('user_id', Auth::id())->where('ativo', true)->get(); 
+       return view('alunos.create',compact('unidades','turmas'));
     }
 
     /**

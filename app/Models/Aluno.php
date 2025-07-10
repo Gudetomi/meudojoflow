@@ -24,6 +24,7 @@ class Aluno extends Model
         'sexo',
         'telefone',
         'endereco',
+        'numero',
         'bairro',
         'cidade',
         'cep',

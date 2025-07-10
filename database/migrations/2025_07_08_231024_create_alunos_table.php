@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('sexo');
             $table->string('telefone',11);
             $table->string('endereco');
+            $table->string('numero');
             $table->string('bairro');
             $table->string('cidade');
             $table->string('cep',8);
