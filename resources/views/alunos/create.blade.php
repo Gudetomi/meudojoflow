@@ -12,42 +12,34 @@
                 <input type="text" name="nome_aluno" id="nome_aluno"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
-
             <div>
                 <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                 <input type="date" name="data_nascimento" id="data_nascimento"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
-
             <div>
                 <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
                 <input type="text" name="cpf" id="cpf"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
         </div>
-
-        {{-- Linha 2: Celular, E-mail, Idade --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label for="telefone" class="block text-sm font-medium text-gray-700">Celular</label>
                 <input type="text" name="telefone" id="telefone"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
-
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                 <input type="email" name="email" id="email"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
             </div>
-
             <div>
                 <label for="idade" class="block text-sm font-medium text-gray-700">Idade</label>
                 <input type="text" name="idade" id="idade" readonly
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
             </div>
         </div>
-
-        {{-- Linha 3: Sexo, Unidade, Responsável --}}
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="sexo" class="block text-sm font-medium text-gray-700">Sexo</label>
@@ -111,7 +103,6 @@
                 </div>
             </div>
         </div>
-        {{-- Linha 4: Endereço --}}
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div class="md:col-span-1 ">
                 <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
@@ -144,8 +135,6 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
         </div>
-
-
         <div class="mt-6 flex justify-left gap-4">
             <button type="submit"
                 class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
@@ -157,13 +146,8 @@
     </form>
     </div>
     @push('scripts')
-        <!-- Importa jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-        <!-- Importa Inputmask -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
-
-
         <script>
             $(function() {
                 $('#cpf').inputmask('999.999.999-99');
@@ -171,7 +155,6 @@
                 $('#cep').inputmask('99999-999');
                 $('#cpf_responsavel').inputmask('999.999.999-99');
                 $('#telefone_responsavel').inputmask('(99) 99999-9999');
-
                 $('#cep').on('blur', function() {
                     var cep = $(this).val().replace(/\D/g, '');
                     if (cep.length === 8) {
@@ -189,23 +172,19 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const nascimentoInput = document.getElementById('data_nascimento');
                 const idadeInput = document.getElementById('idade');
-
                 nascimentoInput.addEventListener('change', function() {
                     const dataNascimento = new Date(this.value);
                     const hoje = new Date();
-
                     if (!isNaN(dataNascimento.getTime())) {
                         let idade = hoje.getFullYear() - dataNascimento.getFullYear();
                         const mesAtual = hoje.getMonth();
                         const diaAtual = hoje.getDate();
                         const mesNascimento = dataNascimento.getMonth();
                         const diaNascimento = dataNascimento.getDate();
-
                         if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual <
                             diaNascimento)) {
                             idade--;
                         }
-
                         idadeInput.value = idade >= 0 ? idade : '';
                     } else {
                         idadeInput.value = '';
@@ -228,12 +207,16 @@
             });
             $('#possui_responsavel').on('change', function() {
                 const valor = $(this).val();
-                if (valor === '1') {
+               if (valor === '1') {
                     $('#campos_responsavel').removeClass('hidden');
+                    campos.forEach(function (campo) {
+                        $(campo).attr('required', true);
+                    });
                 } else {
                     $('#campos_responsavel').addClass('hidden');
-                    // Limpa os campos ao esconder
-                    $('#nome_responsavel, #cpf_responsavel, #email_responsavel, #telefone_responsavel').val('');
+                    campos.forEach(function (campo) {
+                        $(campo).val('').removeAttr('required');
+                    });
                 }
             });
         </script>
