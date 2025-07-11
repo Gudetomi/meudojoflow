@@ -60,13 +60,13 @@ class AlunoController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+
         $validatedData = $request->validate([
             'nome_aluno' => ['required', 'string', 'max:255'],
             'cpf' => ['required', 'string'],
             'data_nascimento' => ['required', 'date'],
             'idade' => ['nullable', 'integer'],
-            'sexo' => ['required', Rule::in(['M', 'F'])],
+            'sexo' => ['required', Rule::in(['0', '1'])],
             'telefone' => ['required'],
             'email' => ['nullable', 'email'],
             'cep' => ['required'],
@@ -75,7 +75,7 @@ class AlunoController extends Controller
             'bairro' => ['required'],
             'cidade' => ['required'],
             'estado' => ['required'],
-            'possui_responsavel' => ['required', 'boolean'],
+            'possui_responsavel' => ['required', Rule::in(['0', '1'])],
             'unidade_id' => [
                 'required',
                 Rule::exists('unidades', 'id')->where(fn($q) => $q->where('user_id', Auth::id())),
@@ -84,32 +84,35 @@ class AlunoController extends Controller
                 'required',
                 Rule::exists('turmas', 'id')->where(fn($q) => $q->where('user_id', Auth::id())),
             ],
-
-            // Dados do responsável
             'nome_responsavel' => ['required_if:possui_responsavel,1'],
             'cpf_responsavel' => ['required_if:possui_responsavel,1'],
             'telefone_responsavel' => ['required_if:possui_responsavel,1'],
             'email_responsavel' => ['nullable', 'email'],
+        ],
+        [
+            'required' => 'O campo :attribute é obrigatório.',
+            'string' => 'O campo :attribute deve ser uma string.',
+            'max' => 'O campo :attribute deve ter no máximo :max caracteres.',
+            'date' => 'O campo :attribute deve ser uma data válida.',
+            'integer' => 'O campo :attribute deve ser um número inteiro.',
+            'email' => 'O campo :attribute deve ser um endereço de e-mail válido.',
+            'required_if' => 'O campo :attribute é obrigatório quando o campo "Possui Responsável" for selecionado.',
         ]);
 
-        // Limpa máscaras
         $validatedData['cpf'] = preg_replace('/\D/', '', $validatedData['cpf']);
         $validatedData['telefone'] = preg_replace('/\D/', '', $validatedData['telefone']);
         $validatedData['cep'] = preg_replace('/\D/', '', $validatedData['cep']);
 
         $validatedData['user_id'] = Auth::id();
-
-        // Cria o aluno
         $aluno = Aluno::create($validatedData);
 
-        // Se tiver responsável, cria e relaciona
-        if ($request->possui_responsavel) {
+        if ($request->possui_responsavel == "1") {
             Responsavel::create([
                 'aluno_id' => $aluno->id,
-                'nome' => $request->nome_responsavel,
-                'cpf' => preg_replace('/\D/', '', $request->cpf_responsavel),
-                'telefone' => preg_replace('/\D/', '', $request->telefone_responsavel),
-                'email' => $request->email_responsavel,
+                'nome_responsavel' => $request->nome_responsavel,
+                'cpf_responsavel' => preg_replace('/\D/', '', $request->cpf_responsavel),
+                'telefone_responsavel' => preg_replace('/\D/', '', $request->telefone_responsavel),
+                'email_responsavel' => $request->email_responsavel,
                 'user_id' => Auth::id(),
             ]);
         }
@@ -146,6 +149,7 @@ class AlunoController extends Controller
      */
     public function destroy(Aluno $aluno)
     {
-        //
+        $aluno->update(['ativo' => false]);
+        return redirect()->route('alunos.index')->with('success', 'Aluno desativada com sucesso.');
     }
 }

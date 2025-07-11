@@ -16,6 +16,7 @@ class Responsavel extends Model
     protected $fillable = [
         'user_id',
         'aluno_id',
+        'nome_responsavel',
         'cpf_responsavel',
         'email_responsavel',
         'telefone_responsavel'

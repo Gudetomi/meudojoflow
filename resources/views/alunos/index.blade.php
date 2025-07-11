@@ -58,7 +58,7 @@
                             <td class="py-4 px-6 whitespace-nowrap">{{ $aluno->cpf }}</td>
                             <td class="py-4 px-6 whitespace-nowrap">{{ $aluno->telefone }}</td>
                             <td class="py-4 px-6 whitespace-nowrap">
-                              <td>{{ $aluno->turma?->nome_turma ?? 'Sem turma' }}</td>
+                              {{ $aluno->turma?->nome_turma ?? 'Sem turma' }}
                             </td>
                             <td class="py-4 px-6 whitespace-nowrap text-center">
                                 <a href="{{ route('alunos.edit', $aluno->id) }}"
@@ -106,7 +106,6 @@
                 });
             }
         });
-
         </script>
     @endpush
 </x-app-layout>

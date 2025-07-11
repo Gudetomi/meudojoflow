@@ -9,34 +9,34 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label for="nome_aluno" class="block text-sm font-medium text-gray-700">Nome</label>
-                <input type="text" name="nome_aluno" id="nome_aluno"
+                <input type="text" name="nome_aluno" id="nome_aluno" value="{{ old('nome_aluno') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div>
                 <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                <input type="date" name="data_nascimento" id="data_nascimento"
+                <input type="date" name="data_nascimento" id="data_nascimento" value="{{ old('data_nascimento') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div>
                 <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
-                <input type="text" name="cpf" id="cpf"
+                <input type="text" name="cpf" id="cpf" value="{{ old('cpf') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label for="telefone" class="block text-sm font-medium text-gray-700">Celular</label>
-                <input type="text" name="telefone" id="telefone"
+                <input type="text" name="telefone" id="telefone" value="{{ old('telefone') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
-                <input type="email" name="email" id="email"
+                <input type="email" name="email" id="email" value="{{ old('email') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
             </div>
             <div>
                 <label for="idade" class="block text-sm font-medium text-gray-700">Idade</label>
-                <input type="text" name="idade" id="idade" readonly
+                <input type="text" name="idade" id="idade" value="{{ old('idade') }}" readonly
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
             </div>
         </div>
@@ -106,35 +106,44 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div class="md:col-span-1 ">
                 <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
-                <input type="text" name="cep" id="cep"
+                <input type="text" name="cep" id="cep" value="{{ old('cep') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div class="md:col-span-3">
                 <label for="endereco" class="block text-sm font-medium text-gray-700">Endereço</label>
-                <input type="text" name="endereco" id="endereco"
+                <input type="text" name="endereco" id="endereco" value="{{ old('endereco') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div>
                 <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
-                <input type="text" name="numero" id="numero"
+                <input type="text" name="numero" id="numero" value="{{ old('numero') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
             </div>
             <div class="md:col-span-3">
                 <label for="bairro" class="block text-sm font-medium text-gray-700">Bairro</label>
-                <input type="text" name="bairro" id="bairro"
+                <input type="text" name="bairro" id="bairro" value="{{ old('bairro') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div class="md:col-span-3">
                 <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade</label>
-                <input type="text" name="cidade" id="cidade"
+                <input type="text" name="cidade" id="cidade" value="{{ old('cidade') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
             <div>
                 <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
-                <input type="text" name="estado" id="estado"
+                <input type="text" name="estado" id="estado" value="{{ old('estado') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
             </div>
         </div>
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="mt-6 flex justify-left gap-4">
             <button type="submit"
                 class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
@@ -169,28 +178,57 @@
                     }
                 });
             });
-            document.addEventListener('DOMContentLoaded', function() {
-                const nascimentoInput = document.getElementById('data_nascimento');
-                const idadeInput = document.getElementById('idade');
-                nascimentoInput.addEventListener('change', function() {
-                    const dataNascimento = new Date(this.value);
-                    const hoje = new Date();
-                    if (!isNaN(dataNascimento.getTime())) {
-                        let idade = hoje.getFullYear() - dataNascimento.getFullYear();
-                        const mesAtual = hoje.getMonth();
-                        const diaAtual = hoje.getDate();
-                        const mesNascimento = dataNascimento.getMonth();
-                        const diaNascimento = dataNascimento.getDate();
-                        if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual <
-                            diaNascimento)) {
-                            idade--;
-                        }
-                        idadeInput.value = idade >= 0 ? idade : '';
-                    } else {
-                        idadeInput.value = '';
-                    }
+document.addEventListener('DOMContentLoaded', function () {
+    const nascimentoInput = document.getElementById('data_nascimento');
+    const idadeInput = document.getElementById('idade');
+    const camposResponsavel = document.getElementById('campos_responsavel');
+    const possuiResponsavelSelect = document.querySelector('select[name="possui_responsavel"]');
+    const campos = [
+        '#nome_responsavel',
+        '#cpf_responsavel',
+        '#telefone_responsavel',
+        '#email_responsavel'
+    ];
+
+    function atualizarIdadeEValidar() {
+        const dataNascimento = new Date(nascimentoInput.value);
+        const hoje = new Date();
+        if (!isNaN(dataNascimento.getTime())) {
+            let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+            const mesAtual = hoje.getMonth();
+            const diaAtual = hoje.getDate();
+            const mesNascimento = dataNascimento.getMonth();
+            const diaNascimento = dataNascimento.getDate();
+            if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
+                idade--;
+            }
+            idadeInput.value = idade >= 0 ? idade : '';
+
+            if (idade < 18) {
+                camposResponsavel.classList.remove('hidden');
+                campos.forEach(campo => {
+                    $(campo).attr('required', true);
                 });
-            });
+                if (possuiResponsavelSelect) {
+                    possuiResponsavelSelect.value = '1';
+                }
+            } else {
+                camposResponsavel.classList.add('hidden');
+                campos.forEach(campo => {
+                    $(campo).val('').removeAttr('required');
+                });
+                if (possuiResponsavelSelect) {
+                    possuiResponsavelSelect.value = '0';
+                }
+            }
+        } else {
+            idadeInput.value = '';
+        }
+    }
+
+    nascimentoInput.addEventListener('change', atualizarIdadeEValidar);
+});
+
             $('#unidade_id').on('change', function() {
                 var unidadeId = $(this).val();
                 if (unidadeId) {

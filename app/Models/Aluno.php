@@ -16,6 +16,7 @@ class Aluno extends Model
     protected $fillable = [
         'nome_aluno',
         'user_id',
+        'turma_id',
         'unidade_id',
         'data_nascimento',
         'cpf',
@@ -43,4 +44,9 @@ class Aluno extends Model
     {
         return $this->belongsTo(Turma::class);
     }
+    public function responsavel()
+    {
+        return $this->hasOne(Responsavel::class);
+    }
+
 }
