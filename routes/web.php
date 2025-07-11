@@ -26,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('unidades', UnidadeController::class);
     Route::resource('turmas', TurmaController::class);
     Route::resource('alunos', AlunoController::class);
+
+    Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
+        ->name('turmas.porUnidade');
 });
 
 require __DIR__.'/auth.php';

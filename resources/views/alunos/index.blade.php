@@ -22,12 +22,7 @@
                     <div>
                         <label for="turma_id" class="block text-sm font-medium text-gray-700">Filtrar por Turma</label>
                         <select id="turma_id" name="turma_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                            <option value="">Todas as Turmas</option>
-                            @foreach ($turmas as $turma)
-                                <option value="{{ $turma->id }}" {{ ($filters['turma_id'] ?? '') == $turma->id ? 'selected' : '' }}>
-                                    {{ $turma->nome_turma }}
-                                </option>
-                            @endforeach
+                            <option value="">Selecione uma turma</option>
                         </select>
                     </div>
                     <div>
@@ -90,4 +85,28 @@
             {{ $alunos->appends($filters)->links() }}
         </div>
     </div>
+     @push('scripts')
+        <!-- Importa jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Importa Inputmask -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+
+        <script>
+        $('#unidade_id').on('change', function () {
+            var unidadeId = $(this).val();
+            if (unidadeId) {
+                $.getJSON(`/turmas/por-unidade/${unidadeId}`, function (data) {
+                    var turmaSelect = $('#turma_id');
+                    turmaSelect.empty();
+                    turmaSelect.append('<option value="">Selecione uma turma</option>');
+                    data.forEach(turma => {
+                        turmaSelect.append(`<option value="${turma.id}">${turma.nome_turma}</option>`);
+                    });
+                });
+            }
+        });
+
+        </script>
+    @endpush
 </x-app-layout>

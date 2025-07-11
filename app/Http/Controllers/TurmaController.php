@@ -106,4 +106,12 @@ class TurmaController extends Controller
         $turma->update(['ativo' => false]);
         return redirect()->route('turmas.index')->with('success', 'Turma desativada com sucesso.');
     }
+    public function getByUnidade($unidadeId)
+    {
+        $turmas = Turma::where('unidade_id', $unidadeId)
+            ->where('user_id', Auth::id())
+            ->get();
+        return response()->json($turmas);
+    }
+
 }
