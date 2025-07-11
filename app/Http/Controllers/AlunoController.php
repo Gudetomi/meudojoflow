@@ -19,6 +19,7 @@ class AlunoController extends Controller
    public function index(Request $request)
    { 
         $alunos = Aluno::where('user_id', Auth::id())
+            ->where('ativo', true)
             ->with('turma')
             ->when($request->query('search'), function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -60,63 +61,43 @@ class AlunoController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nome_aluno' => 'required|string|max:255',
-        'cpf' => 'required|string|max:14|unique:alunos,cpf',
-        'data_nascimento' => 'required|date',
-        'idade' => 'required|integer',
-        'sexo' => 'required|in:1,2',
-        'telefone' => 'required|string',
-        'email' => 'nullable|email',
-        'cep' => 'required|string',
-        'endereco' => 'required|string',
-        'numero' => 'nullable|string',
-        'bairro' => 'required|string',
-        'cidade' => 'required|string',
-        'estado' => 'required|string',
-        'possui_responsavel' => 'required|boolean',
-        'unidade_id' => 'required|uuid|exists:unidades,id',
-        'turma_id' => 'required|uuid|exists:turmas,id',
+    {
+      DB::transaction(function () use ($request) {
+        $validated = $request->validate([
+            'nome_aluno' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14|unique:alunos,cpf',
+            'data_nascimento' => 'required|date',
+            'idade' => 'required|integer',
+            'sexo' => 'required|in:1,2',
+            'telefone' => 'required|string',
+            'email' => 'nullable|email',
+            'cep' => 'required|string',
+            'endereco' => 'required|string',
+            'numero' => 'nullable|string',
+            'bairro' => 'required|string',
+            'cidade' => 'required|string',
+            'estado' => 'required|string',
+            'possui_responsavel' => 'required|boolean',
+            'unidade_id' => 'required|uuid|exists:unidades,id',
+            'turma_id' => 'required|uuid|exists:turmas,id',
 
-        // Se tiver responsável
-        'nome_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-        'cpf_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-        'telefone_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-        'email_responsavel' => 'nullable|email',
-    ]);
-
-    DB::transaction(function () use ($request) {
-        $aluno = Aluno::create([
-            'nome_aluno' => $request->nome_aluno,
-            'cpf' => $request->cpf,
-            'data_nascimento' => $request->data_nascimento,
-            'idade' => $request->idade,
-            'sexo' => $request->sexo,
-            'telefone' => $request->telefone,
-            'email' => $request->email,
-            'cep' => $request->cep,
-            'endereco' => $request->endereco,
-            'numero' => $request->numero,
-            'bairro' => $request->bairro,
-            'cidade' => $request->cidade,
-            'estado' => $request->estado,
-            'possui_responsavel' => $request->possui_responsavel,
-            'unidade_id' => $request->unidade_id,
-            'turma_id' => $request->turma_id,
-            'user_id' => auth()->id(),
+            // Se tiver responsável
+            'nome_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
+            'cpf_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
+            'telefone_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
+            'email_responsavel' => 'nullable|email',
         ]);
 
-        if ($request->possui_responsavel) {
-            $aluno->responsavel()->create([
-                'nome' => $request->nome_responsavel,
-                'cpf' => $request->cpf_responsavel,
-                'telefone' => $request->telefone_responsavel,
-                'email' => $request->email_responsavel,
-            ]);
-        }
+        $aluno  = Aluno::create($validated);
+            if ($request->possui_responsavel) {
+                $aluno->responsavel()->create([
+                    'nome' => $request->nome_responsavel,
+                    'cpf' => $request->cpf_responsavel,
+                    'telefone' => $request->telefone_responsavel,
+                    'email' => $request->email_responsavel,
+                ]);
+            }
     });
-
     return redirect()->route('alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
 }
 
@@ -134,7 +115,6 @@ class AlunoController extends Controller
     public function edit($id)
     {
         $aluno = Aluno::with('responsavel')->findOrFail($id);
-        dd($aluno['responsavel']);
         $unidades = Unidade::all();
         $turmas = Turma::where('unidade_id', $aluno->unidade_id)->get();
 
@@ -167,7 +147,6 @@ class AlunoController extends Controller
 
     DB::transaction(function () use ($request, $id) {
         $aluno = Aluno::findOrFail($id);
-
         // Atualiza aluno
         $aluno->update([
             'nome_aluno' => $request->nome_aluno,
@@ -221,6 +200,6 @@ class AlunoController extends Controller
     public function destroy(Aluno $aluno)
     {
         $aluno->update(['ativo' => false]);
-        return redirect()->route('alunos.index')->with('success', 'Aluno desativada com sucesso.');
+        return redirect()->route('alunos.index')->with('success', 'Aluno desativado com sucesso.');
     }
 }

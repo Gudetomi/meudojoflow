@@ -31,6 +31,7 @@ class Aluno extends Model
         'cep',
         'estado',
         'possui_responsavel',
+        'ativo',
     ];
     public function user()
     {
