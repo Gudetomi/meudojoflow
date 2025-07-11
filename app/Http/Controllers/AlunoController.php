@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Aluno;
 use App\Models\Turma;
 use App\Models\Unidade;
+use App\Models\Responsavel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AlunoController extends Controller
 {
@@ -58,7 +60,61 @@ class AlunoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
+        $validatedData = $request->validate([
+            'nome_aluno' => ['required', 'string', 'max:255'],
+            'cpf' => ['required', 'string'],
+            'data_nascimento' => ['required', 'date'],
+            'idade' => ['nullable', 'integer'],
+            'sexo' => ['required', Rule::in(['M', 'F'])],
+            'telefone' => ['required'],
+            'email' => ['nullable', 'email'],
+            'cep' => ['required'],
+            'endereco' => ['required'],
+            'numero' => ['nullable'],
+            'bairro' => ['required'],
+            'cidade' => ['required'],
+            'estado' => ['required'],
+            'possui_responsavel' => ['required', 'boolean'],
+            'unidade_id' => [
+                'required',
+                Rule::exists('unidades', 'id')->where(fn($q) => $q->where('user_id', Auth::id())),
+            ],
+            'turma_id' => [
+                'required',
+                Rule::exists('turmas', 'id')->where(fn($q) => $q->where('user_id', Auth::id())),
+            ],
+
+            // Dados do responsável
+            'nome_responsavel' => ['required_if:possui_responsavel,1'],
+            'cpf_responsavel' => ['required_if:possui_responsavel,1'],
+            'telefone_responsavel' => ['required_if:possui_responsavel,1'],
+            'email_responsavel' => ['nullable', 'email'],
+        ]);
+
+        // Limpa máscaras
+        $validatedData['cpf'] = preg_replace('/\D/', '', $validatedData['cpf']);
+        $validatedData['telefone'] = preg_replace('/\D/', '', $validatedData['telefone']);
+        $validatedData['cep'] = preg_replace('/\D/', '', $validatedData['cep']);
+
+        $validatedData['user_id'] = Auth::id();
+
+        // Cria o aluno
+        $aluno = Aluno::create($validatedData);
+
+        // Se tiver responsável, cria e relaciona
+        if ($request->possui_responsavel) {
+            Responsavel::create([
+                'aluno_id' => $aluno->id,
+                'nome' => $request->nome_responsavel,
+                'cpf' => preg_replace('/\D/', '', $request->cpf_responsavel),
+                'telefone' => preg_replace('/\D/', '', $request->telefone_responsavel),
+                'email' => $request->email_responsavel,
+                'user_id' => Auth::id(),
+            ]);
+        }
+
+        return redirect()->route('alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
     }
 
     /**

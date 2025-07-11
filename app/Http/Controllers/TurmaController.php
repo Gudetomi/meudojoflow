@@ -109,7 +109,7 @@ class TurmaController extends Controller
     public function getByUnidade($unidadeId)
     {
         $turmas = Turma::where('unidade_id', $unidadeId)
-            ->where('user_id', Auth::id())
+            ->where('user_id', Auth::id())->where('ativo', true)
             ->get();
         return response()->json($turmas);
     }

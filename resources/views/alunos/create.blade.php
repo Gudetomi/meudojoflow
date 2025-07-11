@@ -54,8 +54,8 @@
                 <select name="sexo" id="sexo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                     required>
                     <option value="">Selecione</option>
-                    <option value="M">Masculino</option>
-                    <option value="F">Feminino</option>
+                    <option value="1">Masculino</option>
+                    <option value="2">Feminino</option>
                 </select>
             </div>
 
@@ -82,9 +82,8 @@
                     Responsável?</label>
                 <select name="possui_responsavel" id="possui_responsavel"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                    <option value="">Selecione</option>
                     <option value="1">Sim</option>
-                    <option value="0">Não</option>
+                    <option  selected value="0">Não</option>
                 </select>
             </div>
         </div>
@@ -93,17 +92,17 @@
                 <div class="md:col-span-4">
                     <label for="nome_aluno" class="block text-sm font-medium text-gray-700">Nome do Responsável</label>
                     <input type="text" name="nome_responsavel" id="nome_aluno"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 </div>
                 <div class="md:col-span-2">
                     <label for="cpf" class="block text-sm font-medium text-gray-700">CPF do Responsável</label>
                     <input type="text" name="cpf_responsavel" id="cpf_responsavel"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" >
                 </div>
                 <div class="md:col-span-2">
                     <label for="telefone" class="block text-sm font-medium text-gray-700">Celular do Responsável</label>
                     <input type="text" name="telefone_responsavel" id="telefone_responsavel"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 </div>
                 <div class="md:col-span-4">
                     <label for="email" class="block text-sm font-medium text-gray-700">E-mail do Responsável</label>
