@@ -7,6 +7,7 @@ use App\Models\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 class TurmaController extends Controller
 {
     /**

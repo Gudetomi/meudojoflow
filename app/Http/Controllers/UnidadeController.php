@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UnidadeController extends Controller
 {
@@ -30,15 +31,17 @@ class UnidadeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nome_unidade' => ['required', 'string', 'max:255', 'unique:unidades,nome_unidade'],
-        ],[
-            'nome_unidade.unique' => 'Já existe uma unidade com esse nome!'
-        ]);
-        Unidade::create([
-            'nome_unidade' => $request->nome_unidade,
-            'user_id' => Auth::id()
-        ]);
+        DB::transaction(function () use ($request) {
+            $request->validate([
+                'nome_unidade' => ['required', 'string', 'max:255', 'unique:unidades,nome_unidade'],
+            ],[
+                'nome_unidade.unique' => 'Já existe uma unidade com esse nome!'
+            ]);
+            Unidade::create([
+                'nome_unidade' => $request->nome_unidade,
+                'user_id' => Auth::id()
+            ]);
+        });
         return redirect()->route('unidades.index');
     }
     /**
