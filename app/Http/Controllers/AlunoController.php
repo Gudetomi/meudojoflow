@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class AlunoController extends Controller
 {
@@ -62,44 +63,70 @@ class AlunoController extends Controller
      */
     public function store(Request $request)
     {
-      DB::transaction(function () use ($request) {
-        $validated = $request->validate([
-            'nome_aluno' => 'required|string|max:255',
-            'cpf' => 'required|string|max:14|unique:alunos,cpf',
-            'data_nascimento' => 'required|date',
-            'idade' => 'required|integer',
-            'sexo' => 'required|in:1,2',
-            'telefone' => 'required|string',
-            'email' => 'nullable|email',
-            'cep' => 'required|string',
-            'endereco' => 'required|string',
-            'numero' => 'nullable|string',
-            'bairro' => 'required|string',
-            'cidade' => 'required|string',
-            'estado' => 'required|string',
-            'possui_responsavel' => 'required|boolean',
-            'unidade_id' => 'required|uuid|exists:unidades,id',
-            'turma_id' => 'required|uuid|exists:turmas,id',
-
-            // Se tiver responsável
-            'nome_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-            'cpf_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-            'telefone_responsavel' => 'required_if:possui_responsavel,1|string|nullable',
-            'email_responsavel' => 'nullable|email',
+        // 1. LIMPEZA DOS DADOS: Remove as máscaras dos campos antes da validação.
+        $request->merge([
+            'cpf' => preg_replace('/[^0-9]/', '', $request->input('cpf')),
+            'telefone' => preg_replace('/[^0-9]/', '', $request->input('telefone')),
+            'cep' => preg_replace('/[^0-9]/', '', $request->input('cep')),
+            'cpf_responsavel' => preg_replace('/[^0-9]/', '', $request->input('cpf_responsavel')),
+            'telefone_responsavel' => preg_replace('/[^0-9]/', '', $request->input('telefone_responsavel')),
         ]);
 
-        $aluno  = Aluno::create($validated);
-            if ($request->possui_responsavel) {
+        // 2. VALIDAÇÃO: Alinhada com a sua migration.
+        $validatedData = $request->validate([
+            'nome_aluno'        => 'required|string|max:255',
+            'cpf'               => 'required|string|max:11|unique:alunos,cpf',
+            'data_nascimento'   => 'required|date',
+            'idade'             => 'required|integer',
+            'sexo'              => 'required|integer',
+            'telefone'          => 'required|string|max:11',
+            'email'             => 'nullable|email|unique:alunos,email',
+            'cep'               => 'required|string|max:8',
+            'endereco'          => 'required|string',
+            'numero'            => 'required|string',
+            'bairro'            => 'required|string',
+            'cidade'            => 'required|string',
+            'estado'            => 'required|string',
+            'possui_responsavel'=> 'required|boolean',
+            'unidade_id'        => ['required', 'uuid', Rule::exists('unidades', 'id')->where('user_id', Auth::id())],
+            'turma_id'          => ['required', 'uuid', Rule::exists('turmas', 'id')->where('user_id', Auth::id())],
+
+            // Validação do responsável
+            'nome_responsavel'      => 'required_if:possui_responsavel,true|nullable|string|max:255',
+            'cpf_responsavel'       => 'required_if:possui_responsavel,true|nullable|string|max:11',
+            'telefone_responsavel'  => 'required_if:possui_responsavel,true|nullable|string|max:11',
+            'email_responsavel'     => 'nullable|email|max:255',
+        ]);
+
+        // 3. TRANSAÇÃO: Garante a integridade dos dados.
+        $aluno = DB::transaction(function () use ($validatedData) {
+
+            // CORREÇÃO: Filtra os dados que pertencem apenas à tabela 'alunos'.
+            $alunoData = Arr::except($validatedData, [
+                'nome_responsavel', 'cpf_responsavel', 'telefone_responsavel', 'email_responsavel'
+            ]);
+            // Adiciona o user_id e o estado 'ativo'
+            $alunoData['user_id'] = Auth::id();
+            $alunoData['ativo'] = true;
+
+            // Cria o aluno com os dados corretos.
+            $aluno = Aluno::create($alunoData);
+
+            // Se tiver responsável, cria o registo do responsável.
+            if ($validatedData['possui_responsavel']) {
                 $aluno->responsavel()->create([
-                    'nome' => $request->nome_responsavel,
-                    'cpf' => $request->cpf_responsavel,
-                    'telefone' => $request->telefone_responsavel,
-                    'email' => $request->email_responsavel,
+                    'nome_responsavel'      => $validatedData['nome_responsavel'],
+                    'cpf_responsavel'       => $validatedData['cpf_responsavel'],
+                    'telefone_responsavel'  => $validatedData['telefone_responsavel'],
+                    'email_responsavel'     => $validatedData['email_responsavel'],
                 ]);
             }
-    });
-    return redirect()->route('alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
-}
+
+            return $aluno;
+        });
+
+        return redirect()->route('alunos.index')->with('success', 'Aluno cadastrado com sucesso!');
+    }
 
     /**
      * Display the specified resource.
@@ -124,75 +151,74 @@ class AlunoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-  public function update(Request $request, $id)
-{
-    $request->validate([
-        'nome_aluno' => 'required|string|max:255',
-        'data_nascimento' => 'required|date',
-        'cpf' => 'required|string|max:14',
-        'telefone' => 'required|string|max:20',
-        'email' => 'nullable|email|max:255',
-        'idade' => 'nullable|integer',
-        'sexo' => 'required|in:1,2',
-        'unidade_id' => 'required|uuid',
-        'turma_id' => 'required|uuid',
-        'possui_responsavel' => 'required|boolean',
-        'cep' => 'required|string',
-        'endereco' => 'required|string',
-        'numero' => 'nullable|string',
-        'bairro' => 'required|string',
-        'cidade' => 'required|string',
-        'estado' => 'required|string',
-    ]);
+    public function update(Request $request, Aluno $aluno)
+    {
+        // Verificação de segurança: garante que o utilizador só pode editar os seus próprios alunos.
+        if (Auth::id() !== $aluno->user_id) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        $request->merge([
+            'cpf' => preg_replace('/[^0-9]/', '', $request->input('cpf')),
+            'telefone' => preg_replace('/[^0-9]/', '', $request->input('telefone')),
+            'cep' => preg_replace('/[^0-9]/', '', $request->input('cep')),
+            'cpf_responsavel' => preg_replace('/[^0-9]/', '', $request->input('cpf_responsavel')),
+            'telefone_responsavel' => preg_replace('/[^0-9]/', '', $request->input('telefone_responsavel')),
+        ]);
+        // 1. Validação ÚNICA e COMPLETA, agora alinhada com a sua migration.
+        $validatedData = $request->validate([
+            'nome_aluno'        => 'required|string|max:255',
+            'cpf'               => ['required', 'string', 'max:11', Rule::unique('alunos')->ignore($aluno->id)],
+            'data_nascimento'   => 'required|date',
+            'idade'             => 'required|integer', // Adicionado
+            'sexo'              => 'required|integer', // Adicionado
+            'telefone'          => 'required|string|max:11',
+            'email'             => 'nullable|email',
+            'cep'               => 'required|string|max:8',
+            'endereco'          => 'required|string',
+            'numero'            => 'required|string', // Ajustado para 'required'
+            'bairro'            => 'required|string',
+            'cidade'            => 'required|string',
+            'estado'            => 'required|string',
+            'possui_responsavel'=> 'required|boolean',
+            'unidade_id'        => ['required', 'uuid', Rule::exists('unidades', 'id')->where('user_id', Auth::id())],
+            'turma_id'          => ['required', 'uuid', Rule::exists('turmas', 'id')->where('user_id', Auth::id())],
 
-    DB::transaction(function () use ($request, $id) {
-        $aluno = Aluno::findOrFail($id);
-        // Atualiza aluno
-        $aluno->update([
-            'nome_aluno' => $request->nome_aluno,
-            'cpf' => $request->cpf,
-            'data_nascimento' => $request->data_nascimento,
-            'idade' => $request->idade,
-            'sexo' => $request->sexo,
-            'telefone' => $request->telefone,
-            'email' => $request->email,
-            'cep' => $request->cep,
-            'endereco' => $request->endereco,
-            'numero' => $request->numero,
-            'bairro' => $request->bairro,
-            'cidade' => $request->cidade,
-            'estado' => $request->estado,
-            'possui_responsavel' => $request->possui_responsavel,
-            'unidade_id' => $request->unidade_id,
-            'turma_id' => $request->turma_id,
+            // Validação do responsável
+            'nome_responsavel'      => 'required_if:possui_responsavel,true|nullable|string|max:255',
+            'cpf_responsavel'       => 'required_if:possui_responsavel,true|nullable|string|max:14',
+            'telefone_responsavel'  => 'required_if:possui_responsavel,true|nullable|string|max:15',
+            'email_responsavel'     => 'nullable|email|max:255',
         ]);
 
-        // Se menor de idade, obriga dados do responsável
-        if ((int)$request->idade < 18 || $request->possui_responsavel) {
-            $request->validate([
-                'nome_responsavel' => 'required|string|max:255',
-                'cpf_responsavel' => 'required|string|max:14',
-                'telefone_responsavel' => 'required|string|max:20',
-                'email_responsavel' => 'nullable|email|max:255',
+        // 2. Inicia uma transação para garantir a integridade dos dados
+        DB::transaction(function () use ($validatedData, $aluno) {
+
+            // 3. Filtra os dados que pertencem apenas à tabela 'alunos'.
+            $alunoData = Arr::except($validatedData, [
+                'nome_responsavel', 'cpf_responsavel', 'telefone_responsavel', 'email_responsavel'
             ]);
+            $aluno->update($alunoData);
 
-            $responsavel = $aluno->responsavel ?? new Responsavel();
-            $responsavel->nome = $request->nome_responsavel;
-            $responsavel->cpf = $request->cpf_responsavel;
-            $responsavel->telefone = $request->telefone_responsavel;
-            $responsavel->email = $request->email_responsavel;
-            $responsavel->aluno_id = $aluno->id;
-            $responsavel->save();
-        } else {
-            // Se for maior e já tiver responsável, podemos deletar (opcional)
-            if ($aluno->responsavel) {
-                $aluno->responsavel->delete();
+            // 4. Lógica para criar ou atualizar o responsável.
+            // Pré-requisito: O modelo Aluno deve ter o método 'public function responsavel() { return $this->hasOne(Responsavel::class); }'
+            if ($validatedData['possui_responsavel']) {
+                $aluno->responsavel()->updateOrCreate(
+                    ['aluno_id' => $aluno->id],
+                    [
+                        'nome_responsavel'      => $validatedData['nome_responsavel'],
+                        'cpf_responsavel'       => $validatedData['cpf_responsavel'],
+                        'telefone_responsavel'  => $validatedData['telefone_responsavel'],
+                        'email_responsavel'     => $validatedData['email_responsavel'],
+                    ]
+                );
+            } else {
+                // Se não possui mais responsável, apaga o registo existente (se houver).
+                $aluno->responsavel()->delete();
             }
-        }
-    });
+        });
 
-    return redirect()->route('alunos.index')->with('success', 'Aluno atualizado com sucesso.');
-}
+        return redirect()->route('alunos.index')->with('success', 'Aluno atualizado com sucesso!');
+    }
 
     /**
      * Remove the specified resource from storage.

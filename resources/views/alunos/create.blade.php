@@ -178,56 +178,56 @@
                     }
                 });
             });
-document.addEventListener('DOMContentLoaded', function () {
-    const nascimentoInput = document.getElementById('data_nascimento');
-    const idadeInput = document.getElementById('idade');
-    const camposResponsavel = document.getElementById('campos_responsavel');
-    const possuiResponsavelSelect = document.querySelector('select[name="possui_responsavel"]');
-    const campos = [
-        '#nome_responsavel',
-        '#cpf_responsavel',
-        '#telefone_responsavel',
-        '#email_responsavel'
-    ];
+    document.addEventListener('DOMContentLoaded', function () {
+        const nascimentoInput = document.getElementById('data_nascimento');
+        const idadeInput = document.getElementById('idade');
+        const camposResponsavel = document.getElementById('campos_responsavel');
+        const possuiResponsavelSelect = document.querySelector('select[name="possui_responsavel"]');
+        const campos = [
+            '#nome_responsavel',
+            '#cpf_responsavel',
+            '#telefone_responsavel',
+            '#email_responsavel'
+        ];
 
-    function atualizarIdadeEValidar() {
-        const dataNascimento = new Date(nascimentoInput.value);
-        const hoje = new Date();
-        if (!isNaN(dataNascimento.getTime())) {
-            let idade = hoje.getFullYear() - dataNascimento.getFullYear();
-            const mesAtual = hoje.getMonth();
-            const diaAtual = hoje.getDate();
-            const mesNascimento = dataNascimento.getMonth();
-            const diaNascimento = dataNascimento.getDate();
-            if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
-                idade--;
-            }
-            idadeInput.value = idade >= 0 ? idade : '';
+        function atualizarIdadeEValidar() {
+            const dataNascimento = new Date(nascimentoInput.value);
+            const hoje = new Date();
+            if (!isNaN(dataNascimento.getTime())) {
+                let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+                const mesAtual = hoje.getMonth();
+                const diaAtual = hoje.getDate();
+                const mesNascimento = dataNascimento.getMonth();
+                const diaNascimento = dataNascimento.getDate();
+                if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
+                    idade--;
+                }
+                idadeInput.value = idade >= 0 ? idade : '';
 
-            if (idade < 18) {
-                camposResponsavel.classList.remove('hidden');
-                campos.forEach(campo => {
-                    $(campo).attr('required', true);
-                });
-                if (possuiResponsavelSelect) {
-                    possuiResponsavelSelect.value = '1';
+                if (idade < 18) {
+                    camposResponsavel.classList.remove('hidden');
+                    campos.forEach(campo => {
+                        $(campo).attr('required', true);
+                    });
+                    if (possuiResponsavelSelect) {
+                        possuiResponsavelSelect.value = '1';
+                    }
+                } else {
+                    camposResponsavel.classList.add('hidden');
+                    campos.forEach(campo => {
+                        $(campo).val('').removeAttr('required');
+                    });
+                    if (possuiResponsavelSelect) {
+                        possuiResponsavelSelect.value = '0';
+                    }
                 }
             } else {
-                camposResponsavel.classList.add('hidden');
-                campos.forEach(campo => {
-                    $(campo).val('').removeAttr('required');
-                });
-                if (possuiResponsavelSelect) {
-                    possuiResponsavelSelect.value = '0';
-                }
+                idadeInput.value = '';
             }
-        } else {
-            idadeInput.value = '';
         }
-    }
 
-    nascimentoInput.addEventListener('change', atualizarIdadeEValidar);
-});
+        nascimentoInput.addEventListener('change', atualizarIdadeEValidar);
+    });
 
             $('#unidade_id').on('change', function() {
                 var unidadeId = $(this).val();

@@ -93,6 +93,47 @@
                 </div>
             </div>
         </div>
+         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-1 ">
+                <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
+                <input type="text" name="cep" id="cep" value="{{ old('cep', $aluno->cep ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+            </div>
+            <div class="md:col-span-3">
+                <label for="endereco" class="block text-sm font-medium text-gray-700">Endereço</label>
+                <input type="text" name="endereco" id="endereco" value="{{ old('endereco',$aluno->endereco ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+            </div>
+            <div>
+                <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
+                <input type="text" name="numero" id="numero" value="{{ old('numero',$aluno->numero ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div class="md:col-span-3">
+                <label for="bairro" class="block text-sm font-medium text-gray-700">Bairro</label>
+                <input type="text" name="bairro" id="bairro" value="{{ old('bairro',$aluno->bairro ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+            </div>
+            <div class="md:col-span-3">
+                <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade</label>
+                <input type="text" name="cidade" id="cidade" value="{{ old('cidade',$aluno->cidade ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+            </div>
+            <div>
+                <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
+                <input type="text" name="estado" id="estado" value="{{ old('estado',$aluno->estado ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+            </div>
+        </div>
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="mt-6 flex justify-left gap-4">
             <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
@@ -112,7 +153,19 @@
                 $('#cep').inputmask('99999-999');
                 $('#cpf_responsavel').inputmask('999.999.999-99');
                 $('#telefone_responsavel').inputmask('(99) 99999-9999');
-
+                $('#cep').on('blur', function() {
+                    var cep = $(this).val().replace(/\D/g, '');
+                    if (cep.length === 8) {
+                        $.getJSON('https://viacep.com.br/ws/' + cep + '/json/', function(data) {
+                            if (!data.erro) {
+                                $('#endereco').val(data.logradouro);
+                                $('#bairro').val(data.bairro);
+                                $('#cidade').val(data.localidade);
+                                $('#estado').val(data.uf);
+                            }
+                        });
+                    }
+                });
                 $('#unidade_id').on('change', function () {
                     var unidadeId = $(this).val();
                     if (unidadeId) {
