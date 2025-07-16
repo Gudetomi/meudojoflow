@@ -63,13 +63,13 @@ class AlunoController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. LIMPEZA DOS DADOS: Remove as máscaras dos campos antes da validação.
+        //passar isso para outra função e reaproveitar
         $request->merge([
-            'cpf' => preg_replace('/[^0-9]/', '', $request->input('cpf')),
-            'telefone' => preg_replace('/[^0-9]/', '', $request->input('telefone')),
-            'cep' => preg_replace('/[^0-9]/', '', $request->input('cep')),
-            'cpf_responsavel' => preg_replace('/[^0-9]/', '', $request->input('cpf_responsavel')),
-            'telefone_responsavel' => preg_replace('/[^0-9]/', '', $request->input('telefone_responsavel')),
+            'cpf' => $this->removeMascara($request->input('cpf')),
+            'telefone' => $this->removeMascara($request->input('telefone')),
+            'cep' => $this->removeMascara($request->input('cep')),
+            'cpf_responsavel' => $this->removeMascara($request->input('cpf_responsavel')),
+            'telefone_responsavel' => $this->removeMascara($request->input('telefone_responsavel')),
         ]);
 
         // 2. VALIDAÇÃO: Alinhada com a sua migration.
@@ -158,11 +158,11 @@ class AlunoController extends Controller
             abort(403, 'Acesso não autorizado.');
         }
         $request->merge([
-            'cpf' => preg_replace('/[^0-9]/', '', $request->input('cpf')),
-            'telefone' => preg_replace('/[^0-9]/', '', $request->input('telefone')),
-            'cep' => preg_replace('/[^0-9]/', '', $request->input('cep')),
-            'cpf_responsavel' => preg_replace('/[^0-9]/', '', $request->input('cpf_responsavel')),
-            'telefone_responsavel' => preg_replace('/[^0-9]/', '', $request->input('telefone_responsavel')),
+            'cpf' => $this->removeMascara($request->input('cpf')),
+            'telefone' => $this->removeMascara($request->input('telefone')),
+            'cep' => $this->removeMascara($request->input('cep')),
+            'cpf_responsavel' => $this->removeMascara($request->input('cpf_responsavel')),
+            'telefone_responsavel' => $this->removeMascara($request->input('telefone_responsavel')),
         ]);
         // 1. Validação ÚNICA e COMPLETA, agora alinhada com a sua migration.
         $validatedData = $request->validate([
