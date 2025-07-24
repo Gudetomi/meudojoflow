@@ -17,7 +17,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="flex flex-col md:flex-row min-h-screen bg-white">
             <!-- Seção Esquerda (Branding/Logo) -->
-            <div class="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-6 md:p-12 order-2 md:order-1">
+            <div class="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 order-2 md:order-1">
                 <div class="text-center max-w-md">
                     {{-- Substitua este SVG pelo seu logo ou use o x-application-logo --}}
                     <img src="{{ asset('logo.png') }}" alt="DojoManager Logo">
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Seção Direita (Formulário de Login) -->
-            <div class="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 order-1 md:order-2">
+            <div class="w-full md:w-1/2 flex items-center  bg-gray-50 justify-center p-6 md:p-12 order-1 md:order-2">
                 <div class="w-full max-w-sm">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Bem-vindo de volta!</h2>
                     <p class="text-gray-600 mb-6">Por favor, insira seus dados para continuar.</p>

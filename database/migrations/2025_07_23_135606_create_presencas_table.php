@@ -15,11 +15,13 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('user_id');
             $table->uuid('aluno_id');
-            $table->boolean('presente');
+            $table->boolean('presente')->default(false);
+             $table->date('data_presenca');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('aluno_id')->references('id')->on('alunos');
+            $table->unique(['user_id', 'aluno_id', 'data_presenca']);
         });
     }
 
