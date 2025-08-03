@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\PresencaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('unidades', UnidadeController::class);
     Route::resource('turmas', TurmaController::class);
     Route::resource('alunos', AlunoController::class);
+    Route::resource('presenca', PresencaController::class);
 
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
         ->name('turmas.porUnidade');
