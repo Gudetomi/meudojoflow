@@ -62,7 +62,8 @@ class PresencaController extends Controller
      */
     public function create()
     {
-        //
+        $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
+        return view('presencas.create',compact('unidades'));
     }
 
     /**
