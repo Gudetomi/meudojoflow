@@ -19,9 +19,7 @@ return new class extends Migration
             $table->boolean('presente')->default(false);
             $table->date('data_presenca');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('aluno_id')->references('id')->on('alunos');
+            
             $table->unique(['aluno_id', 'turma_id', 'data_presenca']);
         });
     }

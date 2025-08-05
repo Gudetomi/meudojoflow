@@ -43,7 +43,7 @@
                 <div class="flex items-center gap-4">
                     <a href="{{ route('presenca.create') }}"
                         class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                        + Novo lançamento de Frequência
+                        + Novo Lançamento de Frequência
                     </a>
                     <button type="submit"
                         class="px-6 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">Filtrar</button>
