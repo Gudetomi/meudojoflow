@@ -228,14 +228,13 @@ class AlunoController extends Controller
         $aluno->update(['ativo' => false]);
         return redirect()->route('alunos.index')->with('success', 'Aluno desativado com sucesso.');
     }
-        public function getAlunosByTurma($turmaId)
-    {
+        public function getAlunosByTurma($turmaId){
         $alunos = DB::table('alunos')
-            ->join('aluno_turma', 'alunos.id', '=', 'aluno_turma.aluno_id')
-            ->where('aluno_turma.turma_id', $turmaId)
+            ->where('alunos.turma_id', $turmaId)
             ->where('alunos.user_id', Auth::id())
             ->where('alunos.ativo', true)
             ->select('alunos.id', 'alunos.nome_aluno')
+            ->orderBy('alunos.nome_aluno', 'asc')
             ->get();
 
         return response()->json($alunos);

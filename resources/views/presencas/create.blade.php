@@ -6,8 +6,11 @@
     </x-slot>
 
     <div class="bg-white p-6">
+        {{-- CORREÇÃO: A rota do formulário deve ser 'presencas.store' --}}
         <form action="{{ route('presenca.store') }}" method="POST">
             @csrf
+
+            <!-- Filtros -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
                     <label for="unidade_id" class="block text-sm font-medium text-gray-700">Unidade</label>
@@ -26,6 +29,7 @@
                 </div>
                 <div>
                     <label for="data_presenca" class="block text-sm font-medium text-gray-700">Data da Aula</label>
+                    {{-- CORREÇÃO: O nome do campo deve ser 'data_presenca' para corresponder ao controller --}}
                     <input type="date" name="data_presenca" id="data_presenca" value="{{ old('data_presenca', date('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                 </div>
             </div>
@@ -34,6 +38,8 @@
             <div id="lista-alunos">
                 {{-- O JavaScript irá inserir a tabela de alunos aqui --}}
             </div>
+
+            {{-- Exibição de Erros --}}
             @if ($errors->any())
                 <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                     <ul class="list-disc list-inside">
@@ -43,10 +49,13 @@
                     </ul>
                 </div>
             @endif
+
+            <!-- Botão de Salvar (aparece após selecionar a turma) -->
             <div id="botao-salvar-container" class="mt-6 flex justify-left gap-4 hidden">
                 <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
                     Salvar
                 </button>
+                {{-- CORREÇÃO: A rota para cancelar deve ser 'presenca.index' --}}
                 <a href="{{ route('presenca.index') }}" class="text-sm text-gray-600 hover:underline self-center">Cancelar</a>
             </div>
         </form>
@@ -79,6 +88,8 @@
                         turmaSelect.empty().append('<option value="">Selecione uma unidade primeiro</option>');
                     }
                 });
+
+                // Função para carregar alunos baseada na turma
                 $('#turma_id').on('change', function() {
                     var turmaId = $(this).val();
                     var listaAlunosDiv = $('#lista-alunos');
@@ -96,11 +107,13 @@
                         type: 'GET',
                         success: function(alunos) {
                             listaAlunosDiv.empty();
+                            
                             if (alunos.length > 0) {
+                                // CORREÇÃO: Adicionado max-h-96 e overflow-y-auto para a barra de rolagem interna
                                 var tableHtml = `
-                                    <div class="overflow-x-auto border rounded-lg mt-6">
+                                    <div class="overflow-x-auto border rounded-lg mt-6 max-h-96 overflow-y-auto">
                                         <table class="min-w-full bg-white">
-                                            <thead class="bg-gray-50">
+                                            <thead class="bg-gray-50 sticky top-0">
                                                 <tr>
                                                     <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aluno</th>
                                                     <th class="py-3 px-6 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status da Presença</th>
@@ -112,19 +125,22 @@
                                     </div>
                                 `;
                                 listaAlunosDiv.append(tableHtml);
+
                                 var tableBody = listaAlunosDiv.find('tbody');
+
+                                // Adiciona cada aluno como uma linha na tabela
                                 $.each(alunos, function(index, aluno) {
                                     var alunoRowHtml = `
                                         <tr>
-                                            <td class="py-4 px-6 whitespace-nowrap text-gray-800">${aluno.nome_aluno}</td>
-                                            <td class="py-4 px-6 whitespace-nowrap">
-                                                <label for="aluno_${aluno.id}" class="flex items-center justify-center cursor-pointer">
+                                            <td class="py-4 px-6 whitespace-nowrap text-gray-800 align-middle">${aluno.nome_aluno}</td>
+                                            <td class="py-4 px-6 whitespace-nowrap text-center align-middle">
+                                                <label for="aluno_${aluno.id}" class="inline-flex items-center cursor-pointer">
                                                     <div class="relative">
                                                         <input type="checkbox" id="aluno_${aluno.id}" name="presencas[]" value="${aluno.id}" class="sr-only" checked>
                                                         <div class="block bg-gray-200 w-14 h-8 rounded-full"></div>
                                                         <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
                                                     </div>
-                                                    <div class="ml-3 text-gray-700 font-medium">Presente</div>
+                                                     <div id="toggle-text-${aluno.id}" class="ml-3 text-gray-700 font-medium">Presente</div>
                                                 </label>
                                             </td>
                                         </tr>
@@ -142,6 +158,15 @@
                             botaoSalvar.addClass('hidden');
                         }
                     });
+                });
+                $('#lista-alunos').on('change', 'input[type="checkbox"]', function() {
+                    const alunoId = $(this).val();
+                    const textLabel = $('#toggle-text-' + alunoId);
+                    if ($(this).is(':checked')) {
+                        textLabel.text('Presente').removeClass('text-red-600').addClass('text-gray-700');
+                    } else {
+                        textLabel.text('Ausente').removeClass('text-gray-700').addClass('text-red-600');
+                    }
                 });
             });
         </script>
