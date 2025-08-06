@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
         ->name('turmas.porUnidade');
+    Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
 });
 
 require __DIR__.'/auth.php';

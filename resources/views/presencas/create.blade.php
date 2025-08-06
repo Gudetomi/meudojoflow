@@ -92,7 +92,7 @@
 
                     // Faz a chamada AJAX para buscar os alunos
                     $.ajax({
-                        url: '/turmas/' + turmaId + '/alunos',
+                        url: '/alunos/por-turma/' + turmaId,
                         type: 'GET',
                         success: function(alunos) {
                             listaAlunosDiv.empty();
