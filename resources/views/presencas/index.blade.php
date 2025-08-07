@@ -67,23 +67,11 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    @forelse ($presencas as $presenca)
+                    @forelse ($aulas as $aula)
                         <tr>
-                            <td class="py-4 px-6 whitespace-nowrap">{{$presenca->aluno->nome_aluno ?? 'Aluno não encontrado' }}</td>
-                            <td class="py-4 px-6 whitespace-nowrap">{{$presenca->turma->nome_turma ?? 'Turma não encontrada' }}</td>
-                            <td class="py-4 px-6 whitespace-nowrap">{{ $presenca->data_presenca }}</td>
-                            <td class="py-4 px-6 whitespace-nowrap text-center">
-                                <a href="{{ route('presencas.edit', $presenca->id) }}"
-                                    class="inline-flex items-center px-3 py-1 text-sm text-white bg-black hover:bg-gray-800 rounded-md">
-                                    ✏️ Editar
-                                </a>
-                                <button
-                                    @click="$dispatch('open-exclusao-modal', { url: '{{ route('presencas.destroy', $presenca->id) }}' })"
-                                    type="button"
-                                    class="inline-flex items-center px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md">
-                                    🗑️ Excluir
-                                </button>
-                            </td>
+                            <td class="py-4 px-6 whitespace-nowrap">{{$aula->nome_unidade ?? 'Unidade não encontrada' }}</td>
+                            <td class="py-4 px-6 whitespace-nowrap">{{$aula->nome_turma ?? 'Turma não encontrada' }}</td>
+                            <td class="py-4 px-6 whitespace-nowrap">{{ $aula->data_presenca_formatada }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -98,7 +86,7 @@
             Você tem certeza que deseja excluir esta aula? Esta ação não poderá ser desfeita.
         </x-exclusao-modal>
         <div class="mt-6">
-            {{ $presencas->appends($filters)->links() }}
+            {{ $aulas->appends($filters)->links() }}
         </div>
     </div>
     @push('scripts')

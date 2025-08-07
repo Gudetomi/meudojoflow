@@ -7,6 +7,7 @@ use App\Models\Presenca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class PresencaController extends Controller
 {
@@ -15,45 +16,42 @@ class PresencaController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Busca os dados para preencher os filtros de <select>
         $unidades = Unidade::where('user_id', Auth::id())->where('ativo', true)->get();
         $turmas = Turma::where('user_id', Auth::id())->where('ativo', true)->get();
 
-        // 2. Inicia a query e aplica os filtros condicionalmente
-        $presencas = Presenca::query()
-            // Eager load os relacionamentos para otimizar a consulta
-            ->with(['aluno', 'turma'])
-            // Garante que estamos a ver apenas presenças de alunos do utilizador logado
-            ->whereHas('aluno', function ($query) {
-                $query->where('user_id', Auth::id());
-            })
-            // Filtra por data inicial (a partir de)
-            ->when($request->query('data_inicial'), function ($query, $dataInicial) {
-                $query->where('data_presenca', '>=', $dataInicial);
-            })
-            // Filtra por data final (até)
-            ->when($request->query('data_final'), function ($query, $dataFinal) {
-                $query->where('data_presenca', '<=', $dataFinal);
-            })
-            // Filtra por turma
-            ->when($request->query('turma_id'), function ($query, $turmaId) {
-                $query->where('turma_id', $turmaId);
-            })
-            // Filtra por unidade (através do relacionamento da turma)
-            ->when($request->query('unidade_id'), function ($query, $unidadeId) {
-                $query->whereHas('turma', function ($q) use ($unidadeId) {
-                    $q->where('unidade_id', $unidadeId);
-                });
-            })
-            ->latest('data_presenca') // Ordena pela data mais recente
-            ->paginate(15); // Pagina os resultados
+        $aulasQuery = DB::table('presencas')
+            ->join('turmas', 'presencas.turma_id', '=', 'turmas.id')
+            ->join('unidades', 'turmas.unidade_id', '=', 'unidades.id')
+            ->join('alunos', 'presencas.aluno_id', '=', 'alunos.id')
+            ->where('alunos.user_id', Auth::id())
+            ->select('presencas.data_presenca', 'presencas.turma_id', 'turmas.nome_turma', 'unidades.nome_unidade')
+            ->distinct();
 
-        // 3. Retorna a view com todos os dados necessários
+        $aulasQuery->when($request->query('data_inicial'), function ($query, $dataInicial) {
+            $query->where('presencas.data_presenca', '>=', $dataInicial);
+        });
+        $aulasQuery->when($request->query('data_final'), function ($query, $dataFinal) {
+            $query->where('presencas.data_presenca', '<=', $dataFinal);
+        });
+        $aulasQuery->when($request->query('turma_id'), function ($query, $turmaId) {
+            $query->where('presencas.turma_id', $turmaId);
+        });
+        $aulasQuery->when($request->query('unidade_id'), function ($query, $unidadeId) {
+            $query->where('turmas.unidade_id', $unidadeId);
+        });
+
+        $paginatedAulas = $aulasQuery->latest('presencas.data_presenca')->paginate(15);
+
+        $paginatedAulas->getCollection()->transform(function ($aula) {
+            $aula->data_presenca_formatada = $this->formatarData($aula->data_presenca);
+            return $aula;
+        });
+
         return view('presencas.index', [
-            'presencas' => $presencas,
+            'aulas' => $paginatedAulas,
             'unidades' => $unidades,
             'turmas' => $turmas,
-            'filters' => $request->query() // Passa todos os filtros para a view
+            'filters' => $request->query()
         ]);
     }
 
@@ -71,7 +69,39 @@ class PresencaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      
+        $validation = $request->validate([
+            'turma_id' => ['required', Rule::exists('turmas', 'id')->where(function ($query) {
+                return $query->where('user_id', Auth::id());
+            })],
+            'data_presenca' => ['required', 'date'],
+            'presencas' => ['array','nullable'],
+            'presencas.*' => ['exists:alunos,id']
+        ], [
+            'turma_id.required' => 'Por favor, selecione uma turma.',
+            'turma_id.exists' => 'A turma selecionada é inválida.',
+            'data_presenca.required' => 'A data de presença é obrigatória.',
+            'data_presenca.date' => 'A data de presença deve ser uma data válida.'
+        ]);
+
+        $turmaId = $validation['turma_id'];
+        $dataPresenca = $validation['data_presenca'];
+        $alunosPresentesIds = $validation['presencas'] ?? [];
+
+        DB::transaction(function () use($turmaId, $dataPresenca, $alunosPresentesIds) {
+            $turmaAlunos = Turma::findOrFail($turmaId)->alunos()->get();
+            foreach ($turmaAlunos as $aluno) {
+                $isPresente = in_array($aluno->id, $alunosPresentesIds);
+                Presenca::create([
+                    'turma_id' => $turmaId,
+                    'aluno_id' => $aluno->id,
+                    'data_presenca' => $dataPresenca,
+                    'presente' => $isPresente,
+                    'user_id' => Auth::id()
+                ]);
+            }
+        });
+         return redirect()->route('presenca.index')->with('success', 'Aula salva com sucesso!');
     }
 
     /**

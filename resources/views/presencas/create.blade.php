@@ -6,11 +6,8 @@
     </x-slot>
 
     <div class="bg-white p-6">
-        {{-- CORREÇÃO: A rota do formulário deve ser 'presencas.store' --}}
         <form action="{{ route('presenca.store') }}" method="POST">
             @csrf
-
-            <!-- Filtros -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
                     <label for="unidade_id" class="block text-sm font-medium text-gray-700">Unidade</label>
@@ -29,17 +26,13 @@
                 </div>
                 <div>
                     <label for="data_presenca" class="block text-sm font-medium text-gray-700">Data da Aula</label>
-                    {{-- CORREÇÃO: O nome do campo deve ser 'data_presenca' para corresponder ao controller --}}
                     <input type="date" name="data_presenca" id="data_presenca" value="{{ old('data_presenca', date('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                 </div>
             </div>
 
             <!-- Lista de Alunos (será preenchida via AJAX como uma tabela) -->
             <div id="lista-alunos">
-                {{-- O JavaScript irá inserir a tabela de alunos aqui --}}
             </div>
-
-            {{-- Exibição de Erros --}}
             @if ($errors->any())
                 <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                     <ul class="list-disc list-inside">
@@ -49,13 +42,10 @@
                     </ul>
                 </div>
             @endif
-
-            <!-- Botão de Salvar (aparece após selecionar a turma) -->
             <div id="botao-salvar-container" class="mt-6 flex justify-left gap-4 hidden">
                 <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
                     Salvar
                 </button>
-                {{-- CORREÇÃO: A rota para cancelar deve ser 'presenca.index' --}}
                 <a href="{{ route('presenca.index') }}" class="text-sm text-gray-600 hover:underline self-center">Cancelar</a>
             </div>
         </form>
@@ -65,7 +55,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function() {
-                // Função para carregar turmas baseada na unidade
                 $('#unidade_id').on('change', function() {
                     var unidadeId = $(this).val();
                     var turmaSelect = $('#turma_id');
@@ -77,7 +66,6 @@
                     botaoSalvar.addClass('hidden');
 
                     if (unidadeId) {
-                        // Usando a sua rota para buscar turmas
                         $.getJSON(`/turmas/por-unidade/${unidadeId}`, function(data) {
                             turmaSelect.empty().append('<option value="">Selecione uma turma</option>');
                             data.forEach(turma => {
@@ -109,7 +97,6 @@
                             listaAlunosDiv.empty();
                             
                             if (alunos.length > 0) {
-                                // CORREÇÃO: Adicionado max-h-96 e overflow-y-auto para a barra de rolagem interna
                                 var tableHtml = `
                                     <div class="overflow-x-auto border rounded-lg mt-6 max-h-96 overflow-y-auto">
                                         <table class="min-w-full bg-white">
@@ -136,11 +123,11 @@
                                             <td class="py-4 px-6 whitespace-nowrap text-center align-middle">
                                                 <label for="aluno_${aluno.id}" class="inline-flex items-center cursor-pointer">
                                                     <div class="relative">
-                                                        <input type="checkbox" id="aluno_${aluno.id}" name="presencas[]" value="${aluno.id}" class="sr-only" checked>
-                                                        <div class="block bg-gray-200 w-14 h-8 rounded-full"></div>
-                                                        <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                                                        <input type="checkbox" id="aluno_${aluno.id}" name="presencas[]" value="${aluno.id}" class="sr-only peer" checked>
+                                                        <div class="block bg-gray-200 w-14 h-8 rounded-full peer-checked:bg-green-200"></div>
+                                                        <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition peer-checked:translate-x-full peer-checked:bg-green-500"></div>
                                                     </div>
-                                                     <div id="toggle-text-${aluno.id}" class="ml-3 text-gray-700 font-medium">Presente</div>
+                                                    <div id="toggle-text-${aluno.id}" class="ml-3 text-gray-700 font-medium">Presente</div>
                                                 </label>
                                             </td>
                                         </tr>
@@ -170,15 +157,5 @@
                 });
             });
         </script>
-        {{-- Estilos para o Toggle Switch --}}
-        <style>
-            input:checked ~ .dot {
-                transform: translateX(100%);
-                background-color: #48bb78; /* Cor verde quando presente */
-            }
-            input:checked ~ .block {
-                background-color: #c6f6d5; /* Fundo verde claro quando presente */
-            }
-        </style>
     @endpush
 </x-app-layout>

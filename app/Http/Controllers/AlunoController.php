@@ -99,7 +99,7 @@ class AlunoController extends Controller
         ]);
 
         // 3. TRANSAÇÃO: Garante a integridade dos dados.
-        $aluno = DB::transaction(function () use ($validatedData) {
+        DB::transaction(function () use ($validatedData) {
 
             // CORREÇÃO: Filtra os dados que pertencem apenas à tabela 'alunos'.
             $alunoData = Arr::except($validatedData, [
