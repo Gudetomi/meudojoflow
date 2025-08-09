@@ -27,7 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('unidades', UnidadeController::class);
     Route::resource('turmas', TurmaController::class);
     Route::resource('alunos', AlunoController::class);
+
     Route::resource('presenca', PresencaController::class);
+    Route::get('/presenca/visualizar/{turma}/{data}', [PresencaController::class, 'show'])->name('presenca.show');
+    Route::get('/presenca/editar/{turma}/{data}', [PresencaController::class, 'show'])->name('presenca.edit');
 
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
         ->name('turmas.porUnidade');

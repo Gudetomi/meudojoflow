@@ -72,6 +72,21 @@
                             <td class="py-4 px-6 whitespace-nowrap">{{$aula->nome_unidade ?? 'Unidade não encontrada' }}</td>
                             <td class="py-4 px-6 whitespace-nowrap">{{$aula->nome_turma ?? 'Turma não encontrada' }}</td>
                             <td class="py-4 px-6 whitespace-nowrap">{{ $aula->data_presenca_formatada }}</td>
+                            <td class="py-4 flex items-center justify-center space-x-2">
+                                <button type="button" class="toggle-details-btn inline-flex items-center px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md"
+                                        data-key="{{ $aula->data_presenca . '_' . $aula->turma_id }}"
+                                        data-url="{{ route('presenca.show', ['turma' => $aula->turma_id, 'data' => $aula->data_presenca]) }}">
+                                            <span>🔎 Visualizar</span>
+                                </button>
+                                    <a href="{{ route('presenca.edit', ['turma' => $aula->turma_id, 'data' => $aula->data_presenca]) }}"
+                                    class="inline-flex items-center px-3 py-1 text-sm text-white bg-black hover:bg-gray-800 rounded-md">
+                                        ✏️ Editar
+                                    </a>
+                                </td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="4" class="p-0" id="details-{{ $aula->data_presenca . '_' . $aula->turma_id }}">
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -97,6 +112,31 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 
         <script>
+            $(document).ready(function() {
+                let loadedDetails = [];
+                $('.toggle-details-btn').on('click', function() {
+                    const button = $(this);
+                    const key = button.data('key');
+                    const url = button.data('url');
+                    const detailsRow = $('#details-' + key).closest('tr');
+                    detailsRow.slideToggle();
+                    if (detailsRow.is(':visible')) {
+                        button.find('span').text('Ocultar');
+                    } else {
+                        button.find('span').text('🔎 Visualizar');
+                    }
+                    if (!loadedDetails.includes(key) && detailsRow.is(':visible')) {
+                        const target = $('#details-' + key);
+                        target.html('<div class="p-4 text-center text-gray-500">A carregar...</div>');
+                        $.get(url, (data) => {
+                            target.html(data);
+                            loadedDetails.push(key);
+                        }).fail(() => {
+                            target.html('<div class="p-4 text-center text-red-500">Erro ao carregar os detalhes.</div>');
+                        });
+                    }
+                });
+            });
             $('#unidade_id').on('change', function() {
                 var unidadeId = $(this).val();
                 if (unidadeId) {

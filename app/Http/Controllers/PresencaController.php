@@ -107,15 +107,23 @@ class PresencaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Turma $turma,$data)
     {
-        //
+        if($turma->user != Auth::user()) {
+                abort(403, 'Acesso não autorizado.');
+            }
+            $presencas = Presenca::where('turma_id', $turma->id)
+                ->where('data_presenca', $data)
+                ->with(['aluno', 'turma'])
+                ->get();
+            dd($presencas);
+            return view('presencas._aula_detalhes', ['presencas' => $presencas]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Turma $turma,$data)
     {
         //
     }
