@@ -112,11 +112,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 
         <script>
-$(document).ready(function() {
-                // Array para guardar as chaves das aulas já carregadas
+        $(document).ready(function() {
                 let loadedDetails = [];
-
-                // Listener de clique para os botões "Visualizar"
                 $('.toggle-details-btn').on('click', function() {
                     const button = $(this);
                     const key = button.data('key');
@@ -124,28 +121,23 @@ $(document).ready(function() {
                     const detailsRow = $('#details-' + key).closest('tr');
                     const buttonTextSpan = button.find('span');
 
-                    // Verifica o texto atual para decidir a ação
                     if (buttonTextSpan.text().trim() === '🔎 Visualizar') {
-                        // Se está fechado, abre
-                        detailsRow.slideDown();
+                        detailsRow.slideDown(200);
                         buttonTextSpan.text('Ocultar');
-
-                        // Carrega os detalhes via AJAX se for a primeira vez
                         if (!loadedDetails.includes(key)) {
                             const target = $('#details-' + key);
                             target.html('<div class="p-4 text-center text-gray-500">A carregar...</div>');
 
                             $.get(url, (data) => {
                                 target.html(data);
-                                loadedDetails.push(key); // Marca como carregado
+                                loadedDetails.push(key);
                             }).fail(() => {
                                 target.html('<div class="p-4 text-center text-red-500">Erro ao carregar os detalhes.</div>');
                             });
                         }
                     } else {
-                        // Se está aberto, fecha
-                        detailsRow.slideUp();
-                        buttonTextSpan.html('🔎 Visualizar'); // Usa .html() para renderizar o emoji
+                        detailsRow.slideUp(200);
+                        buttonTextSpan.html('🔎 Visualizar');
                     }
                 });
             });

@@ -1,5 +1,5 @@
-<div class="p-4 bg-gray-50">
-    <table class="min-w-full bg-white rounded-md shadow-inner">
+<div class="p-4 bg-stone-50 ">
+    <table class="min-w-full bg-white rounded-md  inset-shadow-2xs shadow-md">
         <thead class="border-b">
             <tr>
                 <th class="py-2 px-4 text-left text-xs font-semibold text-gray-600 uppercase">Aluno</th>

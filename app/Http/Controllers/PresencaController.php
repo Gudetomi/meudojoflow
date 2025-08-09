@@ -112,10 +112,13 @@ class PresencaController extends Controller
         if($turma->user != Auth::user()) {
                 abort(403, 'Acesso não autorizado.');
             }
-            $presencas = Presenca::where('turma_id', $turma->id)
-                ->where('data_presenca', $data)
-                ->with(['aluno', 'turma'])
-                ->get();
+            $presencas = Presenca::with('aluno')
+                               ->join('alunos', 'presencas.aluno_id', '=', 'alunos.id')
+                               ->where('presencas.turma_id', $turma->id)
+                               ->where('presencas.data_presenca', $data)
+                               ->orderBy('alunos.nome_aluno', 'asc')
+                               ->select('presencas.*')
+                               ->get();
             return view('presencas.visualizar', ['presencas' => $presencas]);
     }
 
