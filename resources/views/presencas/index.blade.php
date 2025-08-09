@@ -112,28 +112,40 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 
         <script>
-            $(document).ready(function() {
+$(document).ready(function() {
+                // Array para guardar as chaves das aulas já carregadas
                 let loadedDetails = [];
+
+                // Listener de clique para os botões "Visualizar"
                 $('.toggle-details-btn').on('click', function() {
                     const button = $(this);
                     const key = button.data('key');
                     const url = button.data('url');
                     const detailsRow = $('#details-' + key).closest('tr');
-                    detailsRow.slideToggle();
-                    if (detailsRow.is(':visible')) {
-                        button.find('span').text('Ocultar');
+                    const buttonTextSpan = button.find('span');
+
+                    // Verifica o texto atual para decidir a ação
+                    if (buttonTextSpan.text().trim() === '🔎 Visualizar') {
+                        // Se está fechado, abre
+                        detailsRow.slideDown();
+                        buttonTextSpan.text('Ocultar');
+
+                        // Carrega os detalhes via AJAX se for a primeira vez
+                        if (!loadedDetails.includes(key)) {
+                            const target = $('#details-' + key);
+                            target.html('<div class="p-4 text-center text-gray-500">A carregar...</div>');
+
+                            $.get(url, (data) => {
+                                target.html(data);
+                                loadedDetails.push(key); // Marca como carregado
+                            }).fail(() => {
+                                target.html('<div class="p-4 text-center text-red-500">Erro ao carregar os detalhes.</div>');
+                            });
+                        }
                     } else {
-                        button.find('span').text('🔎 Visualizar');
-                    }
-                    if (!loadedDetails.includes(key) && detailsRow.is(':visible')) {
-                        const target = $('#details-' + key);
-                        target.html('<div class="p-4 text-center text-gray-500">A carregar...</div>');
-                        $.get(url, (data) => {
-                            target.html(data);
-                            loadedDetails.push(key);
-                        }).fail(() => {
-                            target.html('<div class="p-4 text-center text-red-500">Erro ao carregar os detalhes.</div>');
-                        });
+                        // Se está aberto, fecha
+                        detailsRow.slideUp();
+                        buttonTextSpan.html('🔎 Visualizar'); // Usa .html() para renderizar o emoji
                     }
                 });
             });

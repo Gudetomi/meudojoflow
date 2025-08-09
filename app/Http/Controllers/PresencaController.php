@@ -116,8 +116,7 @@ class PresencaController extends Controller
                 ->where('data_presenca', $data)
                 ->with(['aluno', 'turma'])
                 ->get();
-            dd($presencas);
-            return view('presencas._aula_detalhes', ['presencas' => $presencas]);
+            return view('presencas.visualizar', ['presencas' => $presencas]);
     }
 
     /**
