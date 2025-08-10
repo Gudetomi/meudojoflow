@@ -110,8 +110,8 @@ class PresencaController extends Controller
     public function show(Turma $turma,$data)
     {
         if($turma->user != Auth::user()) {
-                abort(403, 'Acesso não autorizado.');
-            }
+            abort(403, 'Acesso não autorizado.');
+        }
             $presencas = Presenca::with('aluno')
                                ->join('alunos', 'presencas.aluno_id', '=', 'alunos.id')
                                ->where('presencas.turma_id', $turma->id)
@@ -127,22 +127,54 @@ class PresencaController extends Controller
      */
     public function edit(Turma $turma,$data)
     {
-        //
+        if(Auth::id() != $turma->user_id){
+            abort(403, 'Acesso negado.');
+        }
+        $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
+        $turmas = Turma::where('id',$turma->id)->where('ativo', true)->get();
+        $alunos = $turma->alunos()->orderBy('nome_aluno', 'asc')->get();
+        $presencas = Presenca::where('turma_id', $turma->id)
+            ->where('data_presenca', $data)
+            ->get();
+
+        return view('presencas.edit', compact('turma', 'unidades', 'turmas', 'presencas', 'data', 'alunos'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Turma $turma, $data)
     {
-        //
-    }
+        if ($turma->user_id !== Auth::id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $validated = $request->validate([
+            'data_presenca' => 'required|date',
+            'presencas' => 'nullable|array',
+            'presencas.*' => 'uuid|exists:alunos,id'
+        ]);
+
+        $dataPresenca = $validated['data_presenca'];
+        $alunosPresentesIds = $validated['presencas'] ?? [];
+        DB::transaction(function () use ($turma, $dataPresenca, $alunosPresentesIds) {
+            $todosAlunosDaTurma = $turma->alunos;
+            foreach ($todosAlunosDaTurma as $aluno) {
+                $estaPresente = in_array($aluno->id, $alunosPresentesIds);
+                Presenca::updateOrCreate(
+                    [
+                        'aluno_id' => $aluno->id,
+                        'turma_id' => $turma->id,
+                        'data_presenca' => $dataPresenca,
+                    ],
+                    [ 
+                        'presente' => $estaPresente,
+                        'user_id' => Auth::id(),
+                    ]
+                );
+            }
+        });
+
+        return redirect()->route('presenca.index')->with('success', 'Lista de presença atualizada com sucesso!');
     }
 }

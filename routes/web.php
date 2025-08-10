@@ -30,7 +30,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('presenca', PresencaController::class);
     Route::get('/presenca/visualizar/{turma}/{data}', [PresencaController::class, 'show'])->name('presenca.show');
-    Route::get('/presenca/editar/{turma}/{data}', [PresencaController::class, 'show'])->name('presenca.edit');
+    Route::get('/presenca/editar/{turma}/{data}', [PresencaController::class, 'edit'])->name('presenca.edit');
+    Route::put('/presenca/update/{turma}/{data}', [PresencaController::class, 'update'])->name('presenca.update');
 
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
         ->name('turmas.porUnidade');
