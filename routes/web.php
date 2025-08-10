@@ -5,6 +5,8 @@ use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\PresencaController;
+use App\Http\Controllers\EventoController;
+use App\Http\Controllers\PublicoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,9 +35,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/presenca/editar/{turma}/{data}', [PresencaController::class, 'edit'])->name('presenca.edit');
     Route::put('/presenca/update/{turma}/{data}', [PresencaController::class, 'update'])->name('presenca.update');
 
+    Route::get('/calendario', [EventoController::class, 'index'])->name('calendario.index');
+    Route::get('/calendario/feed', [EventoController::class, 'feed'])->name('calendario.feed');
+    Route::post('/calendario/gerar-link', [EventoController::class, 'gerarLinkPartilha'])->name('calendario.gerar-link');
+
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
         ->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
 });
+
+Route::get('/calendario/publico/{token}', [PublicoController::class, 'mostrarCalendario'])->name('calendario.publico');
+Route::get('/calendario/publico/{token}/feed', [PublicoController::class, 'feed'])->name('calendario.publico.feed');
 
 require __DIR__.'/auth.php';
