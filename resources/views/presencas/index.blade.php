@@ -100,10 +100,22 @@
         <x-exclusao-modal>
             Você tem certeza que deseja excluir esta aula? Esta ação não poderá ser desfeita.
         </x-exclusao-modal>
-        <div class="mt-6">
-            {{ $aulas->appends($filters)->links() }}
+        <div class="mt-6 flex items-center justify-between">
+                    <div class="text-sm text-gray-700">
+                        {{ __('pagination.showing') }}
+                        <span class="font-medium">{{ $aulas->firstItem() }}</span>
+                        {{ __('pagination.to') }}
+                        <span class="font-medium">{{ $aulas->lastItem() }}</span>
+                        {{ __('pagination.of') }}
+                        <span class="font-medium">{{ $aulas->total() }}</span>
+                        {{ __('pagination.results') }}
+                    </div>
+                    <div>
+                        {{ $aulas->appends($filters)->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
     @push('scripts')
         <!-- Importa jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

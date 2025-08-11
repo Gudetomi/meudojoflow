@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Importa Inputmask -->
@@ -21,34 +21,39 @@
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
-        <!-- Page Content -->
-        <main>
-            <div class="flex min-h-screen">
-                <aside class="w-80 flex-shrink-0 bg-white border-r shadow-sm h-screen">
-                    @include('layouts.sidebar')
-                </aside>
+<body class="font-sans antialiased bg-gray-100">
+    {{-- CORREÇÃO: O container principal agora é o 'flex' para alinhar a sidebar e o conteúdo --}}
+    <div class="flex min-h-screen">
+        
+        {{-- 1. Sidebar (Menu Lateral) --}}
+        <aside class="w-80 bg-white border-r shadow-sm hidden md:block">
+            @include('layouts.sidebar')
+        </aside>
 
-                <main class="flex-1 p-6 bg-gray-100">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        @if (isset($header))
-                            <header class="bg-white shadow mb-6">
-                                <div
-                                    class="mx-auto py-6 px-4 sm:px-6 lg:px-8 text-xl font-semibold text-gray-800 leading-tight">
-                                    {{ $header }}
-                                </div>
-                            </header>
-                        @endif
+        {{-- 2. Área de Conteúdo Principal (que contém tudo o resto) --}}
+        <div class="flex-1 flex flex-col">
+            
+            {{-- Barra de Navegação Superior --}}
+            @include('layouts.navigation')
 
-                        <div class="p-6 text-gray-900">
-                            {{ $slot }}
-                        </div>
+            {{-- Conteúdo do Slot Principal (a parte que cresce e rola) --}}
+            <main class="flex-grow p-6">
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                     @if (isset($header))
+                        <header class="bg-white shadow-sm">
+                            <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8 text-xl font-semibold text-gray-800 leading-tight">
+                                {{ $header }}
+                            </div>
+                        </header>
+                    @endif
+                    <div class="p-6 text-gray-900">
+                        {{ $slot }}
                     </div>
-                </main>
-            </div>
-        </main>
+                </div>
+            </main>
+
+        </div>
     </div>
     @stack('scripts')
 </body>

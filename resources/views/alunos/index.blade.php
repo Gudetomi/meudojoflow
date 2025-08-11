@@ -100,8 +100,22 @@
         <x-exclusao-modal>
             Você tem certeza que deseja excluir este aluno? Esta ação não poderá ser desfeita.
         </x-exclusao-modal>
-        <div class="mt-6">
-            {{ $alunos->appends($filters)->links() }}
+        <div class="mt-6 flex items-center justify-between">
+    {{-- Texto da contagem de resultados (agora traduzível) --}}
+            <div class="text-sm text-gray-700">
+                {{ __('pagination.showing') }}
+                <span class="font-medium">{{ $alunos->firstItem() }}</span>
+                {{ __('pagination.to') }}
+                <span class="font-medium">{{ $alunos->lastItem() }}</span>
+                {{ __('pagination.of') }}
+                <span class="font-medium">{{ $alunos->total() }}</span>
+                {{ __('pagination.results') }}
+            </div>
+
+            {{-- Links da paginação (agora com o estilo do Tailwind) --}}
+            <div>
+                {{ $alunos->appends($filters)->links() }}
+            </div>
         </div>
     </div>
     @push('scripts')

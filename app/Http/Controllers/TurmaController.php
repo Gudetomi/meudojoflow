@@ -107,12 +107,15 @@ class TurmaController extends Controller
         $turma->update(['ativo' => false]);
         return redirect()->route('turmas.index')->with('success', 'Turma desativada com sucesso.');
     }
-    public function getByUnidade($unidadeId)
+    public function getByUnidade(Unidade $unidade)
     {
-        $turmas = Turma::where('unidade_id', $unidadeId)
-            ->where('user_id', Auth::id())->where('ativo', true)
-            ->get();
-        return response()->json($turmas);
+        // Verificação de segurança
+        if ($unidade->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        // Retorna as turmas da unidade como JSON
+        return response()->json($unidade->turmas);
     }
 
 }
