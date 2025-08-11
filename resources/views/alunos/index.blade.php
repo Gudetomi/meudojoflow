@@ -101,7 +101,6 @@
             Você tem certeza que deseja excluir este aluno? Esta ação não poderá ser desfeita.
         </x-exclusao-modal>
         <div class="mt-6 flex items-center justify-between">
-    {{-- Texto da contagem de resultados (agora traduzível) --}}
             <div class="text-sm text-gray-700">
                 {{ __('pagination.showing') }}
                 <span class="font-medium">{{ $alunos->firstItem() }}</span>

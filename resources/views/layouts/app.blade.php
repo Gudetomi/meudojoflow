@@ -21,40 +21,42 @@
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
-    {{-- CORREÇÃO: O container principal agora é o 'flex' para alinhar a sidebar e o conteúdo --}}
-    <div class="flex min-h-screen">
+<body class="font-sans antialiased bg-gray-100 h-screen flex flex-col">
+    
+    {{-- 1. Barra de Navegação Superior (a toda a largura e não rola) --}}
+    <header class="flex-shrink-0 bg-white border-b shadow-sm z-20">
+        @include('layouts.navigation')
+    </header>
+
+    {{-- 2. Container Flex para o corpo da página (sidebar + conteúdo) --}}
+    <div class="flex flex-grow overflow-hidden">
         
-        {{-- 1. Sidebar (Menu Lateral) --}}
-        <aside class="w-80 bg-white border-r shadow-sm hidden md:block">
+        {{-- 3. Sidebar (Menu Lateral) --}}
+        <aside class="w-64 bg-white border-r shadow-sm hidden md:block flex-shrink-0">
             @include('layouts.sidebar')
         </aside>
 
-        {{-- 2. Área de Conteúdo Principal (que contém tudo o resto) --}}
-        <div class="flex-1 flex flex-col">
+        {{-- 4. Área de Conteúdo Principal (com scroll interno) --}}
+        <main class="flex-1 p-6 overflow-y-auto">
             
-            {{-- Barra de Navegação Superior --}}
-            @include('layouts.navigation')
-
-            {{-- Conteúdo do Slot Principal (a parte que cresce e rola) --}}
-            <main class="flex-grow p-6">
-
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                     @if (isset($header))
-                        <header class="bg-white shadow-sm">
-                            <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8 text-xl font-semibold text-gray-800 leading-tight">
-                                {{ $header }}
-                            </div>
-                        </header>
-                    @endif
-                    <div class="p-6 text-gray-900">
-                        {{ $slot }}
-                    </div>
+            {{-- O seu slot de conteúdo principal, agora envolvendo o header --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                {{-- Cabeçalho da Página (se existir) --}}
+                @if (isset($header) && $header->isNotEmpty())
+                    <header class="p-6 border-b border-gray-200">
+                        <div class="text-xl font-semibold text-gray-800 leading-tight">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endif
+                
+                <div class="p-6 text-gray-900">
+                    {{ $slot }}
                 </div>
-            </main>
-
-        </div>
+            </div>
+        </main>
     </div>
+    
     @stack('scripts')
 </body>
 

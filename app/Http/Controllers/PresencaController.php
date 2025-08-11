@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PresencaController extends Controller
 {
@@ -18,7 +19,8 @@ class PresencaController extends Controller
     {
         $unidades = Unidade::where('user_id', Auth::id())->where('ativo', true)->get();
         $turmas = Turma::where('user_id', Auth::id())->where('ativo', true)->get();
-
+        $dataInicial = $request->query('data_inicial', Carbon::today()->toDateString());
+        $dataFinal = $request->query('data_final', Carbon::today()->toDateString());
         $aulasQuery = DB::table('presencas')
             ->join('turmas', 'presencas.turma_id', '=', 'turmas.id')
             ->join('unidades', 'turmas.unidade_id', '=', 'unidades.id')
@@ -27,12 +29,7 @@ class PresencaController extends Controller
             ->select('presencas.data_presenca', 'presencas.turma_id', 'turmas.nome_turma', 'unidades.nome_unidade')
             ->distinct();
 
-        $aulasQuery->when($request->query('data_inicial'), function ($query, $dataInicial) {
-            $query->where('presencas.data_presenca', '>=', $dataInicial);
-        });
-        $aulasQuery->when($request->query('data_final'), function ($query, $dataFinal) {
-            $query->where('presencas.data_presenca', '<=', $dataFinal);
-        });
+        $aulasQuery->whereBetween('presencas.data_presenca', [$dataInicial, $dataFinal]);
         $aulasQuery->when($request->query('turma_id'), function ($query, $turmaId) {
             $query->where('presencas.turma_id', $turmaId);
         });
