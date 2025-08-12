@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Importa Inputmask -->
@@ -21,42 +21,35 @@
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 </head>
 
-<body class="font-sans antialiased bg-gray-100 h-screen flex flex-col">
-    
-    {{-- 1. Barra de Navegação Superior (a toda a largura e não rola) --}}
-    <header class="flex-shrink-0 bg-white border-b shadow-sm z-20">
+<body class="font-sans antialiased">
+    <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
-    </header>
+        <!-- Page Content -->
+        <main class="h-screen">
+            <div class="flex min-h-screen">
+                <aside class="w-80 flex-shrink-0 bg-white h-screen">
+                    @include('layouts.sidebar')
+                </aside>
 
-    {{-- 2. Container Flex para o corpo da página (sidebar + conteúdo) --}}
-    <div class="flex flex-grow overflow-hidden">
-        
-        {{-- 3. Sidebar (Menu Lateral) --}}
-        <aside class="w-64 bg-white border-r shadow-sm hidden md:block flex-shrink-0">
-            @include('layouts.sidebar')
-        </aside>
+                <main class="flex-1 p-6 bg-gray-100">
+                    <div class="bg-white overflow-hidden sm:rounded-lg">
+                        @if (isset($header))
+                            <header class="bg-white shadow mb-6">
+                                <div
+                                    class="mx-auto py-6 px-4 sm:px-6 lg:px-8 text-xl font-semibold text-gray-800 leading-tight">
+                                    {{ $header }}
+                                </div>
+                            </header>
+                        @endif
 
-        {{-- 4. Área de Conteúdo Principal (com scroll interno) --}}
-        <main class="flex-1 p-6 overflow-y-auto">
-            
-            {{-- O seu slot de conteúdo principal, agora envolvendo o header --}}
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                {{-- Cabeçalho da Página (se existir) --}}
-                @if (isset($header) && $header->isNotEmpty())
-                    <header class="p-6 border-b border-gray-200">
-                        <div class="text-xl font-semibold text-gray-800 leading-tight">
-                            {{ $header }}
+                        <div class="p-6 text-gray-900">
+                            {{ $slot }}
                         </div>
-                    </header>
-                @endif
-                
-                <div class="p-6 text-gray-900">
-                    {{ $slot }}
-                </div>
+                    </div>
+                </main>
             </div>
         </main>
     </div>
-    
     @stack('scripts')
 </body>
 

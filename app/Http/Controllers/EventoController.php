@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Evento;
 
 class EventoController extends Controller
 {
@@ -11,7 +12,10 @@ class EventoController extends Controller
      */
     public function index()
     {
-        //
+        $eventos = Evento::where('user_id', Auth::id())->get();
+        return view('eventos.index', [
+                'eventos' => $eventos,
+            ]);
     }
 
     /**
