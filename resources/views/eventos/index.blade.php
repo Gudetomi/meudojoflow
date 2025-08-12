@@ -110,7 +110,7 @@
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,listWeek'
+                        right: 'dayGridMonth,timeGridWeek'
                     },
                     buttonText: {
                         today: 'Hoje',

@@ -13,7 +13,7 @@ class PublicoController extends Controller
     public function mostrarCalendario(string $token)
     {
         $user = User::where('calendario_token', $token)->firstOrFail();
-        return view('calendario.publico', ['user' => $user]);
+        return view('eventos.publico', ['user' => $user]);
     }
 
     /**
