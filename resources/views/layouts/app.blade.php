@@ -27,12 +27,12 @@
         <!-- Page Content -->
         <main class="h-screen">
             <div class="flex min-h-screen">
-                <aside class="w-80 flex-shrink-0 bg-white h-screen">
+                <aside class="w-80 flex-shrink-0 bg-white   h-screen">
                     @include('layouts.sidebar')
                 </aside>
 
-                <main class="flex-1 p-6 bg-gray-100">
-                    <div class="bg-white overflow-hidden sm:rounded-lg">
+                <main class="flex-1 p-6 bg-gray-100  sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         @if (isset($header))
                             <header class="bg-white shadow mb-6">
                                 <div
@@ -42,7 +42,7 @@
                             </header>
                         @endif
 
-                        <div class="p-6 text-gray-900">
+                        <div class="p-6 shadow-sm sm:rounded-lg text-gray-900">
                             {{ $slot }}
                         </div>
                     </div>

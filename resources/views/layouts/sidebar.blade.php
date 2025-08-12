@@ -1,4 +1,4 @@
-<div class="bg-white overflow-hidden rounded-lg sm:rounded-lg p-4 h-full">
+<div class="bg-white overflow-hidden p-4 h-full">
     <nav class="mt-4 flex flex-col space-y-1">
         <!-- Link Ativo -->
         <a href="{{ route('dashboard') }}" 
