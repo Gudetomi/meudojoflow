@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
-
+use Illuminate\Http\Resources\Json\JsonResource;
 class AppServiceProvider extends ServiceProvider
 {
     /**

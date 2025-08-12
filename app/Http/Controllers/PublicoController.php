@@ -2,63 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PublicoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibe o calendário público de um utilizador.
      */
-    public function index()
+    public function mostrarCalendario(string $token)
     {
-        //
+        $user = User::where('calendario_token', $token)->firstOrFail();
+        return view('calendario.publico', ['user' => $user]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Fornece os eventos para o calendário público.
      */
-    public function create()
+    public function feed(string $token, Request $request)
     {
-        //
-    }
+        $user = User::where('calendario_token', $token)->firstOrFail();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $start = $request->query('start');
+        $end = $request->query('end');
+        $eventos = $user->eventos()
+                        ->where(function ($query) use ($start, $end) {
+                            $query->where(function ($q) use ($start, $end) {
+                                $q->whereNull('data_fim')
+                                  ->whereDate('data_inicio', '>=', $start)
+                                  ->whereDate('data_inicio', '<=', $end);
+                            });
+                            $query->orWhere(function ($q) use ($start, $end) {
+                                $q->whereNotNull('data_fim')
+                                  ->whereDate('data_inicio', '<=', $end)
+                                  ->whereDate('data_fim', '>=', $start);
+                            });
+                        })
+                        ->get();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $formattedEvents = $eventos->map(function ($evento) {
+           return [
+                'id'    => $evento->id,
+                'title' => $evento->titulo,
+                'start' => $evento->data_inicio->format('Y-m-d'),
+                'end'    => $evento->data_fim ? $evento->data_fim->addDay()->format('Y-m-d') : null,
+                'color' => $evento->cor,
+                'extendedProps' => [
+                    'description' => $evento->descricao,
+                ],
+            ];
+        });
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json($formattedEvents);
     }
 }

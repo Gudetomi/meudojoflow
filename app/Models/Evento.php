@@ -22,8 +22,8 @@ class Evento extends Model
     ];
 
     protected $casts = [
-        'data_inicio' => 'datetime',
-        'data_fim' => 'datetime',
+        'data_inicio' => 'date:Y-m-d',
+        'data_fim' => 'date:Y-m-d',
     ];
     public function user()
     {

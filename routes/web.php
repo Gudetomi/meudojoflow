@@ -30,17 +30,23 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('turmas', TurmaController::class);
     Route::resource('alunos', AlunoController::class);
 
-    Route::resource('presenca', PresencaController::class);
+    Route::get('/presenca', [PresencaController::class, 'index'])->name('presenca.index');
+    Route::get('/presenca/lancamento', [PresencaController::class, 'create'])->name('presenca.create');
+    Route::post('/presenca', [PresencaController::class, 'store'])->name('presenca.store');
     Route::get('/presenca/visualizar/{turma}/{data}', [PresencaController::class, 'show'])->name('presenca.show');
     Route::get('/presenca/editar/{turma}/{data}', [PresencaController::class, 'edit'])->name('presenca.edit');
-    Route::put('/presenca/update/{turma}/{data}', [PresencaController::class, 'update'])->name('presenca.update');
+    Route::put('/presenca/{turma}/{data}', [PresencaController::class, 'update'])->name('presenca.update');
+    Route::delete('/presenca/{turma}/{data}', [PresencaController::class, 'destroy'])->name('presenca.destroy');
 
     Route::get('/calendario', [EventoController::class, 'index'])->name('calendario.index');
     Route::get('/calendario/feed', [EventoController::class, 'feed'])->name('calendario.feed');
-    Route::post('/calendario/gerar-link', [EventoController::class, 'gerarLinkPartilha'])->name('calendario.gerar-link');
+    Route::post('/calendario/gerar-link', [EventoController::class, 'gerarLinkCompartilhamento'])->name('calendario.gerar-link');
+    Route::post('/calendario', [EventoController::class, 'store'])->name('eventos.store');
+    Route::put('/calendario/{evento}', [EventoController::class, 'update'])->name('eventos.update');
+    Route::delete('/calendario/{evento}', [EventoController::class, 'destroy'])->name('eventos.destroy');
 
-    Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])
-        ->name('turmas.porUnidade');
+    // Rotas para AJAX
+    Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
 });
 
