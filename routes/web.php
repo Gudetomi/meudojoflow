@@ -8,6 +8,7 @@ use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\PresencaController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\PublicoController;
+use App\Http\Controllers\JudoAIController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,11 +47,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/calendario', [EventoController::class, 'store'])->name('eventos.store');
     Route::put('/calendario/{evento}', [EventoController::class, 'update'])->name('eventos.update');
     Route::delete('/calendario/{evento}', [EventoController::class, 'destroy'])->name('eventos.destroy');
-    
+
     // Rotas para AJAX
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
 });
+
+Route::get('/sensei-virtual', [JudoAIController::class, 'index'])->name('ia.judo.index');
+Route::post('/sensei-virtual/ask', [JudoAIController::class, 'ask'])->name('ia.judo.ask');
 
 Route::get('/calendario/publico/{token}', [PublicoController::class, 'mostrarCalendario'])->name('calendario.publico');
 Route::get('/calendario/publico/{token}/feed', [PublicoController::class, 'feed'])->name('calendario.publico.feed');
