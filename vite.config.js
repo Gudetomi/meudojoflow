@@ -6,7 +6,7 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         watch: {
-            usePolling: true, // Para detectar mudanças em sistemas de arquivos compartilhados (ex: WSL, Docker volumes)
+            usePolling: true,
         },
     },
     plugins: [

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aluno;
 use App\Models\Turma;
 use App\Models\Unidade;
+use App\Models\Faixa;
 use App\Models\Responsavel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -145,7 +146,11 @@ class AlunoController extends Controller
         $unidades = Unidade::all();
         $turmas = Turma::where('unidade_id', $aluno->unidade_id)->get();
 
-        return view('alunos.edit', compact('aluno', 'unidades', 'turmas'));
+        $faixas = Faixa::whereHas('modalidade', function ($query) {
+                    $query->where('id', Auth::user()->modalidade_id);
+                })->orderBy('ordem')->get();
+
+        return view('alunos.edit', compact('aluno', 'unidades', 'turmas','faixas'));
     }
 
     /**

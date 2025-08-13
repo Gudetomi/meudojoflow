@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GraduacaoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\UnidadeController;
@@ -44,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/calendario', [EventoController::class, 'store'])->name('eventos.store');
     Route::put('/calendario/{evento}', [EventoController::class, 'update'])->name('eventos.update');
     Route::delete('/calendario/{evento}', [EventoController::class, 'destroy'])->name('eventos.destroy');
-
+    
+    Route::resource('graduacoes', GraduacaoController::class);
     // Rotas para AJAX
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');

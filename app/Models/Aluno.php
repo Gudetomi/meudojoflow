@@ -50,4 +50,9 @@ class Aluno extends Model
         return $this->hasOne(Responsavel::class);
     }
 
+    public function graduacoes()
+    {
+        return $this->hasMany(Graduacao::class)->latest('data_graduacao');
+    }
+
 }
