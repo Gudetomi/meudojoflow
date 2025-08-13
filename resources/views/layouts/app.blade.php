@@ -50,6 +50,7 @@
             </div>
         </main>
     </div>
+    <x-ia-chat />
     @stack('scripts')
 </body>
 

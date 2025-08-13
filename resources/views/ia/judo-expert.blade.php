@@ -13,28 +13,21 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex flex-col h-screen max-w-2xl mx-auto bg-white shadow-lg">
-        <!-- Cabeçalho -->
         <header class="bg-white shadow-md p-4 text-center border-b">
             <h1 class="text-2xl font-bold text-gray-800">Sensei Virtual</h1>
             <p class="text-sm text-gray-600">O seu especialista em história e técnicas de Judô</p>
         </header>
-
-        <!-- Área de Chat -->
         <main id="chat-area" class="flex-1 p-6 overflow-y-auto space-y-4">
-            <!-- Mensagem Inicial -->
             <div class="flex">
                 <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
                     <p>Hajime! Estou pronto para responder às suas perguntas sobre o Caminho Suave. O que gostaria de saber?</p>
                 </div>
             </div>
         </main>
-
-        <!-- Área de Input -->
         <footer class="bg-white border-t p-4">
             <form id="chat-form" class="flex items-center gap-4">
                 <input type="text" id="pergunta" placeholder="Digite a sua pergunta aqui..." class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" autocomplete="off">
                 <button type="submit" id="submit-button" class="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-colors disabled:bg-red-300">
-                    {{-- AJUSTE: Corrigido o path do SVG para o ícone de envio --}}
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                       <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                     </svg>
@@ -99,7 +92,6 @@
             function updateMessage(messageId, newText) {
                 const messageBubble = $('#' + messageId);
                 if (messageBubble.length) {
-                    // Converte quebras de linha em <br> para uma melhor formatação
                     const formattedText = newText.replace(/\n/g, '<br>');
                     messageBubble.html(`<p>${formattedText}</p>`).removeClass('thinking');
                     chatArea.scrollTop(chatArea[0].scrollHeight);
