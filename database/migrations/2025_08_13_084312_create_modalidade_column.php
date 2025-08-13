@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modalidades', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('nome');
-            $table->text('descricao')->nullable();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+           $table->foreignUuid('modalidade_id')->nullable()->after('email')->constrained('modalidades')->nullOnDelete();
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modalidades');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['modalidade_id']);
+            $table->dropColumn('modalidade_id');
+        });
     }
 };

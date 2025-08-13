@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('faixas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('modalidade_id')->constrained('modalidades')->onDelete('cascade');
             
-            $table->string('nome');
+            $table->string('nome'); 
             $table->integer('ordem');
-            $table->string('cor')->nullable();
+            
+            $table->string('cor_principal')->nullable();   
+            $table->string('cor_secundaria')->nullable(); 
+            
             $table->timestamps();
         });
     }
