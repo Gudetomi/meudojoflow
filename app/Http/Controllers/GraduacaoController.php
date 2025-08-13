@@ -38,13 +38,16 @@ class GraduacaoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Graduacao $graduacao)
+    public function destroy($id)
     {
-        dd($graduacao);
-        if ($graduacao->user_id !== Auth::id()) {
-            abort(403, 'Acesso não autorizado.');
-        }
+        $graduacao = Graduacao::findOrFail($id);
         $graduacao->delete();
-        return back()->with('success', 'Graduação removida com sucesso!');
-    }
+
+       if(request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('alunos.edit', $graduacao->aluno_id)
+                        ->with('success', 'Graduação removida com sucesso.');
+        }
 }

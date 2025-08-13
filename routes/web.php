@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('unidades', UnidadeController::class);
     Route::resource('turmas', TurmaController::class);
     Route::resource('alunos', AlunoController::class);
+    Route::resource('graduacoes', GraduacaoController::class);
 
     Route::get('/presenca', [PresencaController::class, 'index'])->name('presenca.index');
     Route::get('/presenca/lancamento', [PresencaController::class, 'create'])->name('presenca.create');
@@ -46,7 +47,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/calendario/{evento}', [EventoController::class, 'update'])->name('eventos.update');
     Route::delete('/calendario/{evento}', [EventoController::class, 'destroy'])->name('eventos.destroy');
     
-    Route::resource('graduacoes', GraduacaoController::class);
     // Rotas para AJAX
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
