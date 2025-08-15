@@ -22,4 +22,8 @@ class Modalidade extends Model
    {
        return $this->hasMany(Faixa::class)->orderBy('ordem');
    }
+   public function turmas()
+    {
+        return $this->hasMany(Turma::class);
+    }
 }

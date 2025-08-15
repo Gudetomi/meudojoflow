@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Turma;
 use App\Models\Unidade;
+use App\Models\Modalidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,8 @@ class TurmaController extends Controller
     public function create()
     {
         $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
-        return view('turmas.create',compact('unidades'));
+        $modalidades = Modalidade::get();
+        return view('turmas.create',compact('unidades','modalidades'));
     }
 
     /**
@@ -43,16 +45,19 @@ class TurmaController extends Controller
                 Rule::exists('unidades', 'id')->where(function ($query) {
                         return $query->where('user_id', Auth::id());
                 })
-            ]   
+            ],
+            'modalidade_id' => ['required']
         ],[
             'nome_turma.required' => 'O nome da turma é obrigatório.',
             'nome_turma.unique'   => 'Já existe uma turma com este nome nesta unidade.',
             'unidade_id.required' => 'Por favor, selecione uma unidade.',
             'unidade_id.exists'   => 'A unidade selecionada é inválida.',
+            'modalidade_id.required' => 'Por favor, selecione uma modalidade.'
         ]);
             Turma::create([
                 'nome_turma' => $validatedData['nome_turma'],
                 'unidade_id' => $validatedData['unidade_id'],
+                'modalidade_id' => $validatedData['modalidade_id'],
                 'user_id'    => Auth::id()
             ]);
             return redirect()->route('turmas.index');
@@ -67,7 +72,8 @@ class TurmaController extends Controller
             abort(403, 'Acesso negado.');
         }
         $unidades = Unidade::where('user_id',Auth::id())->where('ativo',true)->get();
-        return view('turmas.edit', compact('turma','unidades'));
+        $modalidades = Modalidade::get();
+        return view('turmas.edit', compact('turma','unidades','modalidades'));
     }
 
     /**
@@ -88,12 +94,15 @@ class TurmaController extends Controller
                 Rule::exists('unidades', 'id')->where(function ($query) {
                         return $query->where('user_id', Auth::id());
                     }),
-            ]   
+            ],
+            'modalidade_id' => ['required'
+            ],
         ],[
             'nome_turma.required' => 'O nome da turma é obrigatório.',
             'nome_turma.unique'   => 'Já existe uma turma com este nome nesta unidade.',
             'unidade_id.required' => 'Por favor, selecione uma unidade.',
             'unidade_id.exists'   => 'A unidade selecionada é inválida.',
+            'modalidade_id.required' => 'Por favor, selecione uma modalidade.'
         ]);
         $turma->update($validatedData);
         return redirect()->route('turmas.index');
