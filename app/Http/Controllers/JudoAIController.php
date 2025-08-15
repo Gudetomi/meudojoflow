@@ -28,8 +28,10 @@ class JudoAIController extends Controller
         $perguntaDoUtilizador = $request->input('pergunta');
 
         // Construção do prompt com o contexto da persona "Sensei"
-        $prompt = "Você é um Sensei de Judô, um especialista na história, filosofia e técnicas desta arte marcial.
-         Responda à seguinte pergunta de forma clara, informativa e respeitosa, como um verdadeiro mestre faria: \"{$perguntaDoUtilizador}\"";
+        $prompt = "Você é um assistente especialista em Judô Kodokan. Responda às perguntas
+                dos usuários de forma clara, objetiva e informativa. Suas respostas devem focar
+                na história, nas regras, na filosofia e na terminologia do judô. Não responda
+                a perguntas que fujam deste tópico: \"{$perguntaDoUtilizador}\"";
 
         try {
             // CORREÇÃO: A sintaxe correta para chamar o modelo Gemini 1.5 Flash
