@@ -16,6 +16,7 @@
                         <tr class="border-b">
                             <th class="pb-2">Nome</th>
                             <th class="pb-2">Unidade</th>
+                            <th class="pb-2">Modalidade</th>
                             <th class="pb-2">Status</th>
                             <th class="pb-2 text-center">Ações</th>
                         </tr>
@@ -25,6 +26,7 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="py-4">{{ $turma->nome_turma }}</td>
                                 <td class="py-4">{{ $turma->unidade->nome_unidade }}</td>
+                                <td class="py-4">{{ $turma->modalidade->nome }}</td>
                                 <td class="py-4">{{ $turma->ativo ? 'Ativa' : 'Inativa' }}</td>
                                 <td class="py-4 flex items-center justify-center space-x-2">
                                     <a href="{{ route('turmas.edit', $turma->id) }}"

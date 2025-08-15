@@ -15,6 +15,7 @@ class Turma extends Model
     protected $table = 'turmas';
     protected $fillable = [
         'nome_turma',
+        'modalidade_id',
         'user_id',
         'unidade_id',
         'ativo',
@@ -31,5 +32,8 @@ class Turma extends Model
     {
         return $this->hasMany(Aluno::class);
     }
-
+    public function modalidade()
+    {
+        return $this->belongsTo(Modalidade::class);
+    }
 }

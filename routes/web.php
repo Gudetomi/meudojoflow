@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     // Rotas para AJAX
     Route::get('/turmas/por-unidade/{unidade}', [TurmaController::class, 'getByUnidade'])->name('turmas.porUnidade');
     Route::get('/alunos/por-turma/{turma}', [AlunoController::class, 'getAlunosByTurma'])->name('alunos.porTurma');
+    
 });
 
 Route::get('/sensei-virtual', [JudoAIController::class, 'index'])->name('ia.judo.index');

@@ -9,7 +9,7 @@
         <form action="{{ route('turmas.update',$turma->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
                 <div>
                     <label for="unidade_id" class="block text-sm font-medium text-gray-700">Unidade</label>
                     <select id="unidade_id" name="unidade_id" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
@@ -26,6 +26,18 @@
                     <label for="nome_turma" class="block text-sm font-medium text-gray-700">Nome da Turma</label>
                     <input type="text" id="nome_turma" name="nome_turma" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="{{ old('nome_turma',$turma->nome_turma) }}">
                     @error('nome_turma') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="modalidade_id" class="block text-sm font-medium text-gray-700">Modalidade</label>
+                    <select id="modalidade_id" name="modalidade_id" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">Selecione uma modalidade</option>
+                        @foreach ($modalidades as $modalidade)
+                            <option value="{{ $modalidade->id }}" {{ old('modalidade_id',$turma->modalidade_id) == $modalidade->id ? 'selected' : '' }}>
+                                {{ $modalidade->nome }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('modalidade_id') <p class="mt-1 text-red-500 text-xs">{{ $message }}</p> @enderror
                 </div>
             </div>
             <div class="mt-6 flex items-center gap-4">
