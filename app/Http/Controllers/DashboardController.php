@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Aluno;
 use App\Models\Presenca;
 use App\Models\Evento;
-use App\Models\Turma;   // Adicionado
-use App\Models\Unidade; // Adicionado
+use App\Models\Turma;
+use App\Models\Unidade;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -42,15 +42,14 @@ class DashboardController extends Controller
                                   ->count();
 
         $taxaDePresenca = ($totalPresencasRegistradas > 0) 
-        ? round(($totalPresentes / $totalPresencasRegistradas) * 100) 
-        : 0;
+            ? round(($totalPresentes / $totalPresencasRegistradas) * 100) 
+            : 0;
             
         $proximosEventos = Evento::where('user_id', $user->id)
                                  ->where('data_inicio', '>=', Carbon::today())
                                  ->orderBy('data_inicio', 'asc')
                                  ->take(3)
                                  ->get();
-
         return view('dashboard', [
             'totalAlunosAtivos' => $totalAlunosAtivos,
             'totalTurmasAtivas' => $totalTurmasAtivas,

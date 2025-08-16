@@ -4,8 +4,6 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-
-    {{-- Linha de Cards de Indicadores --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-blue-100 rounded-full p-4 flex-shrink-0">
