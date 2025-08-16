@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Aluno;
 use App\Models\Presenca;
 use App\Models\Evento;
+use App\Models\Turma;   // Adicionado
+use App\Models\Unidade; // Adicionado
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -18,12 +20,18 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Número de Alunos Ativos
         $totalAlunosAtivos = Aluno::where('user_id', $user->id)
                                   ->where('ativo', true)
                                   ->count();
+        
+        $totalTurmasAtivas = Turma::where('user_id', $user->id)
+                                  ->where('ativo', true)
+                                  ->count();
 
-        // 2. Taxa de Presença (últimos 30 dias)
+        $totalUnidadesAtivas = Unidade::where('user_id', $user->id)
+                                      ->where('ativo', true)
+                                      ->count();
+
         $totalPresencasRegistradas = Presenca::where('user_id', $user->id)
                                              ->whereDate('data_presenca', '>=', Carbon::today()->subDays(30))
                                              ->count();
@@ -33,21 +41,20 @@ class DashboardController extends Controller
                                   ->whereDate('data_presenca', '>=', Carbon::today()->subDays(30))
                                   ->count();
 
-        // Calcula a percentagem, evitando divisão por zero
         $taxaDePresenca = ($totalPresencasRegistradas > 0) 
             ? round(($totalPresentes / $totalPresencasRegistradas) * 100) 
             : 0;
             
-        // 3. Próximos Eventos (os 3 mais próximos)
         $proximosEventos = Evento::where('user_id', $user->id)
                                  ->where('data_inicio', '>=', Carbon::today())
                                  ->orderBy('data_inicio', 'asc')
                                  ->take(3)
                                  ->get();
 
-        // 4. Envia todos os dados para a view
         return view('dashboard', [
             'totalAlunosAtivos' => $totalAlunosAtivos,
+            'totalTurmasAtivas' => $totalTurmasAtivas,
+            'totalUnidadesAtivas' => $totalUnidadesAtivas,
             'taxaDePresenca' => $taxaDePresenca,
             'proximosEventos' => $proximosEventos
         ]);
