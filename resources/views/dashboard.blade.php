@@ -4,6 +4,8 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
+
+    {{-- Linha de Cards de Indicadores --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-blue-100 rounded-full p-4 flex-shrink-0">
@@ -11,7 +13,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Alunos Ativos</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalAlunosAtivos ?? 0}}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalAlunosAtivos }}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -20,7 +22,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Turmas Ativas</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalTurmasAtivas ? 0}}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalTurmasAtivas }}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -29,7 +31,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Unidades Ativas</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalUnidadesAtivas ? 0 }}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalUnidadesAtivas }}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -38,7 +40,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Taxa de Presença (Últimos 30 dias)</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $taxaDePresenca  ? 0}}%</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $taxaDePresenca }}%</p>
             </div>
         </div>
     </div>
