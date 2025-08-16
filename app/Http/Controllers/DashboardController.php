@@ -42,8 +42,8 @@ class DashboardController extends Controller
                                   ->count();
 
         $taxaDePresenca = ($totalPresencasRegistradas > 0) 
-            ? round(($totalPresentes / $totalPresencasRegistradas) * 100) 
-            : 0;
+        ? round(($totalPresentes / $totalPresencasRegistradas) * 100) 
+        : 0;
             
         $proximosEventos = Evento::where('user_id', $user->id)
                                  ->where('data_inicio', '>=', Carbon::today())

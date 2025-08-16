@@ -11,7 +11,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Alunos Ativos</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalAlunosAtivos }}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalAlunosAtivos ?? 0}}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -20,7 +20,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Turmas Ativas</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalTurmasAtivas }}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalTurmasAtivas ? 0}}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -29,7 +29,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Unidades Ativas</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalUnidadesAtivas }}</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $totalUnidadesAtivas ? 0 }}</p>
             </div>
         </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
@@ -38,7 +38,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500">Taxa de Presença (Últimos 30 dias)</p>
-                <p class="text-3xl font-bold text-gray-900">{{ $taxaDePresenca }}%</p>
+                <p class="text-3xl font-bold text-gray-900">{{ $taxaDePresenca  ? 0}}%</p>
             </div>
         </div>
     </div>
