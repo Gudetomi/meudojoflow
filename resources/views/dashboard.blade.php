@@ -4,7 +4,11 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
+
+    {{-- Linha de Cards de Indicadores --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        
+        <!-- Card: Alunos Ativos -->
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-blue-100 rounded-full p-4 flex-shrink-0">
                 <x-heroicon-o-users class="w-8 h-8 text-blue-600" />
@@ -14,6 +18,8 @@
                 <p class="text-3xl font-bold text-gray-900">{{ $totalAlunosAtivos }}</p>
             </div>
         </div>
+
+        <!-- Card: Turmas Ativas -->
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-purple-100 rounded-full p-4 flex-shrink-0">
                 <x-heroicon-o-academic-cap class="w-8 h-8 text-purple-600" />
@@ -23,6 +29,8 @@
                 <p class="text-3xl font-bold text-gray-900">{{ $totalTurmasAtivas }}</p>
             </div>
         </div>
+
+        <!-- Card: Unidades Ativas -->
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-indigo-100 rounded-full p-4 flex-shrink-0">
                 <x-heroicon-o-building-office-2 class="w-8 h-8 text-indigo-600" />
@@ -32,6 +40,8 @@
                 <p class="text-3xl font-bold text-gray-900">{{ $totalUnidadesAtivas }}</p>
             </div>
         </div>
+
+        <!-- Card: Taxa de Presença -->
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center gap-4 border border-gray-200">
             <div class="bg-green-100 rounded-full p-4 flex-shrink-0">
                 <x-heroicon-o-check-circle class="w-8 h-8 text-green-600" />
@@ -42,6 +52,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Card: Próximos Eventos -->
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Próximos Eventos</h3>
         <div class="space-y-4">
