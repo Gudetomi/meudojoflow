@@ -6,7 +6,7 @@ use App\Models\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\Rule;
 class UnidadeController extends Controller
 {
     /**
@@ -33,7 +33,9 @@ class UnidadeController extends Controller
     {
         DB::transaction(function () use ($request) {
             $request->validate([
-                'nome_unidade' => ['required', 'string', 'max:255', 'unique:unidades,nome_unidade'],
+                'nome_unidade' => ['required', 'string', 'max:255',Rule::unique('unidades', 'nome_unidade')->where(function ($query) {
+                    return $query->where('ativo', 1);
+                })],
             ],[
                 'nome_unidade.unique' => 'Já existe uma unidade com esse nome!'
             ]);

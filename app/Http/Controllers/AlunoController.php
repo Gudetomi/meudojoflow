@@ -81,7 +81,7 @@ class AlunoController extends Controller
             'idade'             => 'required|integer',
             'sexo'              => 'required|integer',
             'telefone'          => 'required|string|max:11',
-            'email'             => 'nullable|email|unique:alunos,email',
+            'email'             => 'nullable|email',
             'cep'               => 'required|string|max:8',
             'endereco'          => 'required|string',
             'numero'            => 'required|string',
