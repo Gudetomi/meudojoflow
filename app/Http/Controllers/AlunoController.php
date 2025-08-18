@@ -97,6 +97,17 @@ class AlunoController extends Controller
             'cpf_responsavel'       => 'required_if:possui_responsavel,true|nullable|string|max:11',
             'telefone_responsavel'  => 'required_if:possui_responsavel,true|nullable|string|max:11',
             'email_responsavel'     => 'nullable|email|max:255',
+        ], [
+            'nome_aluno.required' => 'O nome do aluno é obrigatório.',
+            'cpf.required'        => 'O CPF do aluno é obrigatório.',
+            'cpf.unique'          => 'Já existe um aluno cadastrado com esse CPF.',
+            'email.email'         => 'Informe um e-mail válido.',
+            'telefone.max'        => 'O telefone deve ter no máximo 11 dígitos.',
+            'cep.max'             => 'O CEP deve ter no máximo 8 dígitos.',
+
+            'nome_responsavel.required_if'     => 'O nome do responsável é obrigatório quando o aluno possui responsável.',
+            'cpf_responsavel.required_if'      => 'O CPF do responsável é obrigatório quando o aluno possui responsável.',
+            'telefone_responsavel.required_if' => 'O telefone do responsável é obrigatório quando o aluno possui responsável.',
         ]);
 
         // 3. TRANSAÇÃO: Garante a integridade dos dados.

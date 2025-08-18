@@ -29,6 +29,10 @@ class EventoController extends Controller
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
             'descricao' => 'nullable|string',
             'cor' => 'nullable|string|max:7',
+        ], [
+            'titulo.required' => 'O título do evento é obrigatório.',
+            'data_inicio.required' => 'A data de início do evento é obrigatória.',
+            'data_fim.after_or_equal' => 'A data de fim do evento deve ser após ou igual à data de início.',
         ]);
 
         $evento = Auth::user()->eventos()->create($validated);
