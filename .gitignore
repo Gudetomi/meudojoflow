@@ -24,4 +24,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .docker/mysql/dbdata/
-docker/nginx/default.conf
+/docker/nginx/default.conf
