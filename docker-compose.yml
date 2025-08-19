@@ -20,8 +20,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
     volumes:
       - ./:/var/www
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -30,6 +30,8 @@ services:
       - app
     networks:
       - laravel
+    environment:
+    - APP_ENV=${APP_ENV}
 
   db:
     image: postgres:15
