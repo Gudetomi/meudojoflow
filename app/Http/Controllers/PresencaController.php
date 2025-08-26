@@ -83,6 +83,16 @@ class PresencaController extends Controller
 
         $turmaId = $validation['turma_id'];
         $dataPresenca = $validation['data_presenca'];
+        $jaExiste = Presenca::where('turma_id', $turmaId)
+                            ->where('data_presenca', $dataPresenca)
+                            ->exists();
+
+        if ($jaExiste) {
+            return back()
+                ->withErrors(['geral' => 'A frequência para esta turma na data selecionada já foi lançada. Você pode editá-la na página de histórico.'])
+                ->withInput();
+        }
+        
         $alunosPresentesIds = $validation['presencas'] ?? [];
 
         DB::transaction(function () use($turmaId, $dataPresenca, $alunosPresentesIds) {
