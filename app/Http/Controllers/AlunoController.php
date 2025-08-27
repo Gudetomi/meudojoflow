@@ -131,6 +131,7 @@ class AlunoController extends Controller
                     'cpf_responsavel'       => $validatedData['cpf_responsavel'],
                     'telefone_responsavel'  => $validatedData['telefone_responsavel'],
                     'email_responsavel'     => $validatedData['email_responsavel'],
+                    'user_id'               => Auth::id()
                 ]);
             }
 
