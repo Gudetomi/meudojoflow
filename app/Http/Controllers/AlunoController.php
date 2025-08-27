@@ -84,7 +84,7 @@ class AlunoController extends Controller
             'email'             => 'nullable|email',
             'cep'               => 'required|string|max:8',
             'endereco'          => 'required|string',
-            'numero'            => 'required|string',
+            'numero'            => 'nullable|string',
             'bairro'            => 'required|string',
             'cidade'            => 'required|string',
             'estado'            => 'required|string',
