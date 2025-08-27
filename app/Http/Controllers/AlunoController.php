@@ -186,13 +186,13 @@ class AlunoController extends Controller
             'nome_aluno'        => 'required|string|max:255',
             'cpf'               => ['required', 'string', 'max:11', Rule::unique('alunos')->ignore($aluno->id)],
             'data_nascimento'   => 'required|date',
-            'idade'             => 'required|integer', // Adicionado
-            'sexo'              => 'required|integer', // Adicionado
+            'idade'             => 'required|integer',
+            'sexo'              => 'required|integer',
             'telefone'          => 'required|string|max:11',
             'email'             => 'nullable|email',
             'cep'               => 'required|string|max:8',
             'endereco'          => 'required|string',
-            'numero'            => 'required|string', // Ajustado para 'required'
+            'numero'            => 'nullable|string',
             'bairro'            => 'required|string',
             'cidade'            => 'required|string',
             'estado'            => 'required|string',
